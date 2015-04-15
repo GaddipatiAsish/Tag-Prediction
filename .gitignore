@@ -1,4 +1,4 @@
- # IDE specific files #
+# IDE specific files #
 .classpath
 .project
 *.log
@@ -15,3 +15,4 @@ Thumbs.db
 .Trashes
 .DS_Store
 .DS_Store?
+
