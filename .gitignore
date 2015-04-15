@@ -1,0 +1,17 @@
+ # IDE specific files #
+.classpath
+.project
+*.log
+.settings
+.settings/*
+.bin
+.bin/*
+
+# Compiled source #
+*.class
+
+# OS specific #
+Thumbs.db
+.Trashes
+.DS_Store
+.DS_Store?
