@@ -3,6 +3,7 @@ package org.so.ml.WebScraper;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import com.jaunt.Document;
 import com.jaunt.Element;
@@ -68,6 +69,37 @@ public class WebsiteScraper {
 		Iterator<Element> textIterator = textElements.iterator();
 		while (textIterator.hasNext()) {
 			qText += textIterator.next().innerText();
+		}
+		codeTokenizer(qcodeSegments);
+	}
+
+	/**
+	 * 
+	 * @param qtext
+	 */
+	/* List<String> */void textTokenizer(String qtext) {
+		List<String> tokens = new ArrayList<String>();
+		/* replace the speacial characters with a space */
+
+		System.out.println("**modified**");
+		System.out.println(qtext.replaceAll("[^a-zA-Z0-9]", " "));
+
+		// return tokens;
+	}
+
+	void codeTokenizer(List<String> codeSegments) {
+		Iterator<String> iterator = codeSegments.iterator();
+		while (iterator.hasNext()) {
+			String codeBlock = iterator.next();
+			/* get the alphanumeric's from code Segments */
+			codeBlock = codeBlock.replaceAll("[^a-zA-Z]", " ");
+			StringTokenizer tokenizer = new StringTokenizer(codeBlock, " ");
+			while (tokenizer.hasMoreTokens()) {
+				String tok = tokenizer.nextToken();
+				if (tok.trim().length() > 1) {
+					System.out.print(tok + ",");
+				}
+			}
 		}
 	}
 }

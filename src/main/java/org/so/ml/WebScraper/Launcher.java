@@ -29,13 +29,13 @@ public class Launcher {
 						.toString();
 				agent.visit(link);
 				webScraper = new WebsiteScraper(agent.doc);
-				System.out.println("****Question****");
-				System.out.println(webScraper.qText);
+				//System.out.println("****Question****");
+				//System.out.println(webScraper.qText);
 
-				System.out.println("****Tags****");
-				System.out.println(webScraper.qTags);
+				//System.out.println("****Tags****");
+				//System.out.println(webScraper.qTags);
 
-				System.out.println("****Code****");
+				System.out.println("\n\n****Code****");
 				System.out.println(webScraper.qcodeSegments);
 			}
 
