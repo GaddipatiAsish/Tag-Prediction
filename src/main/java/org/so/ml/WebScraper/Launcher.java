@@ -24,7 +24,7 @@ public class Launcher {
 	 */
 	static List<String> getStopWords() throws IOException {
 		List<String> stopWordsList = new ArrayList<String>();
-		String stopWordsFile = "C:\\Users\\AsishKumar\\workspace\\PredictTags\\src\\main\\java\\org\\so\\ml\\PredictTags\\StopWords.txt";
+		String stopWordsFile = "./data/StopWords.txt";
 		BufferedReader breader = new BufferedReader(new FileReader(
 				stopWordsFile));
 		String line;
