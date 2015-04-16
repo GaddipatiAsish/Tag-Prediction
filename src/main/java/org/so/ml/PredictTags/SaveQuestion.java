@@ -25,7 +25,7 @@ public class SaveQuestion {
 		json.addProperty("tag3", t3);
 		json.addProperty("tag4", t4);
 		json.addProperty("tag5", t5);
-		json.addProperty("question", "How to work with coffee script?");
+		json.addProperty("question", "Can Asish see this?");
 		
 		Response r = dbClient.save(json);
 		System.out.println(r.toString());

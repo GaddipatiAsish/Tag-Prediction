@@ -13,7 +13,7 @@ public class Launcher {
 	public static void main(String args[]) throws ResponseException, NotFound {
 
 		UserAgent agent = new UserAgent();
-		String weblink = "http://stackoverflow.com/questions/tagged/java";
+		String weblink = "http://stackoverflow.com/questions/tagged/python";
 
 		/* loop through the pages each having 15 questions */
 		for (int pageno = 1; pageno < 2; pageno++) {
