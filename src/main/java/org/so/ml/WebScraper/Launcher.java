@@ -1,6 +1,12 @@
 package org.so.ml.WebScraper;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream.GetField;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.jaunt.Document;
 import com.jaunt.Element;
@@ -10,7 +16,27 @@ import com.jaunt.ResponseException;
 import com.jaunt.UserAgent;
 
 public class Launcher {
-	public static void main(String args[]) throws ResponseException, NotFound {
+	/**
+	 * getStopWords method gets the English stop words from a file and returns
+	 * them as a list
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	static List<String> getStopWords() throws IOException {
+		List<String> stopWordsList = new ArrayList<String>();
+		String stopWordsFile = "C:\\Users\\AsishKumar\\workspace\\PredictTags\\src\\main\\java\\org\\so\\ml\\PredictTags\\StopWords.txt";
+		BufferedReader breader = new BufferedReader(new FileReader(
+				stopWordsFile));
+		String line;
+		while ((line = breader.readLine()) != null) {
+			stopWordsList.add(line.toString().trim());
+		}
+		breader.close();
+		return stopWordsList;
+	}
+	
+	public static void main(String args[]) throws ResponseException, NotFound, IOException {
 
 		UserAgent agent = new UserAgent();
 		String weblink = "http://stackoverflow.com/questions/tagged/python";
@@ -28,15 +54,15 @@ public class Launcher {
 				String link = question.findFirst("<a>").getAt("href")
 						.toString();
 				agent.visit(link);
-				webScraper = new WebsiteScraper(agent.doc);
-				//System.out.println("****Question****");
-				//System.out.println(webScraper.qText);
+				webScraper = new WebsiteScraper(agent.doc, getStopWords());
+				System.out.println("****Question Description Tokens****");
+				System.out.println(webScraper.qDescriptionTokens);
 
-				//System.out.println("****Tags****");
-				//System.out.println(webScraper.qTags);
+				System.out.println("****Tags****");
+				System.out.println(webScraper.qTags);
 
-				System.out.println("\n\n****Code****");
-				System.out.println(webScraper.qcodeSegments);
+				System.out.println("\n\n****Code Tokens****");
+				System.out.println(webScraper.qCodeTokens);
 			}
 
 			Element nextLink = webDoc.findFirst("<div class=\"pager fl\"");

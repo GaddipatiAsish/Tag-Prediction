@@ -1,5 +1,8 @@
 package org.so.ml.WebScraper;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,21 +14,29 @@ import com.jaunt.Elements;
 import com.jaunt.NotFound;
 
 public class WebsiteScraper {
+
 	/* list that stores the tags of the question */
 	protected List<String> qTags = new ArrayList<String>();
+
 	/* List of code fragments in the question */
 	protected List<String> qcodeSegments = new ArrayList<String>();
-	/* text of the question */
-	protected String qText = new String();
+	/* List of Tokens of the Question Code Segments */
+	List<String> qCodeTokens = new ArrayList<String>();
+
+	/* Description of the question */
+	protected String qDescription = new String();
+	/* List of Tokens of the Question Description */
+	List<String> qDescriptionTokens = new ArrayList<String>();
 
 	/**
-	 * takes the document of website as input and parses it into question, code
-	 * and tags
+	 * WebsiteScraper method takes the document of website as input and parses
+	 * it into question, code and tags
 	 * 
 	 * @param website
 	 * @throws NotFound
 	 */
-	public WebsiteScraper(Document website) throws NotFound {
+	public WebsiteScraper(Document website, List<String> stopWordsList)
+			throws NotFound {
 		/* get the postcell tag where the question resides. */
 		Elements postcell = website.findEvery("<td class=postcell");
 		/* traverse through the postcell tags to get the content of the Question */
@@ -37,7 +48,7 @@ public class WebsiteScraper {
 			Element keyword = iterator.next();
 			if (keyword.getAt("class").compareTo("post-text") == 0
 					&& keyword.getAt("itemprop").compareTo("text") == 0) {
-				separateTextAndCode(keyword);
+				separateTextAndCode(keyword, stopWordsList);
 			}
 			/* Get the tags for question */
 			if (keyword.getAt("class").compareTo("post-taglist") == 0) {
@@ -56,7 +67,8 @@ public class WebsiteScraper {
 	 * 
 	 * @throws NotFound
 	 */
-	public void separateTextAndCode(Element question) throws NotFound {
+	public void separateTextAndCode(Element question, List<String> stopWordsList)
+			throws NotFound {
 		/* Get the Code in the Question */
 		Elements codeElements = question.findEvery("<pre>");
 		Iterator<Element> codeIterator = codeElements.iterator();
@@ -64,42 +76,68 @@ public class WebsiteScraper {
 			qcodeSegments.add(codeIterator.next().getFirst("<code>")
 					.innerText());
 		}
+
 		/* Get the text in the Question */
 		Elements textElements = question.findEvery("<p>");
 		Iterator<Element> textIterator = textElements.iterator();
 		while (textIterator.hasNext()) {
-			qText += textIterator.next().innerText();
+			qDescription += textIterator.next().innerText();
 		}
-		codeTokenizer(qcodeSegments);
+
+		qCodeTokenizer(qcodeSegments,stopWordsList);/* Tokenize the code */
+		/* Tokenize the description of the question */
+		qDescriptionTokenizer(qDescription, stopWordsList);
+
 	}
 
 	/**
+	 * qDescriptionTokenizer method tokenizes the description of the question
+	 * and removes the stop words from the tokens
 	 * 
 	 * @param qtext
 	 */
-	/* List<String> */void textTokenizer(String qtext) {
-		List<String> tokens = new ArrayList<String>();
-		/* replace the speacial characters with a space */
-
-		System.out.println("**modified**");
-		System.out.println(qtext.replaceAll("[^a-zA-Z0-9]", " "));
-
-		// return tokens;
+	void qDescriptionTokenizer(String qDescription, List<String> stopWordsList) {
+		/* replace the special characters with a space */
+		qDescription = qDescription.replaceAll("[^a-zA-Z0-9]", " ");
+		/* tokenize and add tokens to list tokens */
+		StringTokenizer tokenizer = new StringTokenizer(qDescription, " ");
+		while (tokenizer.hasMoreTokens()) {
+			String tok = tokenizer.nextToken();
+			if (tok.trim().length() > 1) {
+				qDescriptionTokens.add(tok.trim());
+			}
+		}
+		/* remove the stop words */
+		qDescriptionTokens.removeAll(stopWordsList);
 	}
 
-	void codeTokenizer(List<String> codeSegments) {
+	/**
+	 * qCodeTokenizer method tokenizes the code of the question and removes the
+	 * stop words from the tokens
+	 * 
+	 * @param codeSegments
+	 * @param stopWordsList
+	 */
+	void qCodeTokenizer(List<String> codeSegments, List<String> stopWordsList) {
 		Iterator<String> iterator = codeSegments.iterator();
+		/* loop through the code segments */
 		while (iterator.hasNext()) {
 			String codeBlock = iterator.next();
 			/* get the alphanumeric's from code Segments */
 			codeBlock = codeBlock.replaceAll("[^a-zA-Z]", " ");
+			/* tokenize the code block and add them to list qCodeTokens */
 			StringTokenizer tokenizer = new StringTokenizer(codeBlock, " ");
 			while (tokenizer.hasMoreTokens()) {
 				String tok = tokenizer.nextToken();
 				if (tok.trim().length() > 1) {
-					System.out.print(tok + ",");
+					qCodeTokens.add(tok.trim());
 				}
 			}
 		}
+		/* remove the stop words */
+		qCodeTokens.removeAll(stopWordsList);
 	}
+
+
+
 }
