@@ -8,12 +8,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.lightcouch.CouchDbClient;
-import org.lightcouch.View;
-import org.lightcouch.ViewResult;
-
-import com.google.gson.JsonObject;
-
 public class FeatureWords {
 	
 	// DB client properties file
@@ -24,21 +18,25 @@ public class FeatureWords {
 	private static int wordThreshold = 3;
 
 	/**
-	 * 
+	 * Get Feature Words
 	 * @param args
 	 * @throws IOException 
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, NoSuchFieldException, SecurityException {
 	
-		// Make the DB Connection
-		CouchDbClient dbClient = new CouchDbClient(dbPropFile);
-		// Get all the questions into a view
-		View allQsView = dbClient.view("all_docs/all_questions");
-		ViewResult<String, String, JsonObject> viewResult = allQsView.queryView(String.class, String.class, JsonObject.class);
-		long noOfRows = viewResult.getTotalRows();
+		// Connect to DB
+		DBAccess db  = new DBAccess();
+		db.connect(dbPropFile);
+		
+		// Run View to get all questions
+		db.runView("all_docs/all_questions");
+		long noOfRows = db.noOfRowsInView;
+		
 		// For each question, get all the words and update HashMap
 		for(int d=0; d<noOfRows; d++) {
-			String description = viewResult.getRows().get(d).getKey();
+			String description = db.viewResultGetKey(d);
 			updateHashMap(description);
 		}
 		
