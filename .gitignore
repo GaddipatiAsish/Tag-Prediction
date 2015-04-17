@@ -6,6 +6,8 @@
 .settings/*
 .bin
 .bin/*
+.metadata/*
+.metadata
 
 # Compiled source #
 *.class
