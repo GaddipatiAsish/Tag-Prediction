@@ -25,13 +25,12 @@ public class Launcher {
 	static List<String> getStopWords() throws IOException {
 		List<String> stopWordsList = new ArrayList<String>();
 		String stopWordsFile = "./data/StopWords.txt";
-		BufferedReader breader = new BufferedReader(new FileReader(
-				stopWordsFile));
+		BufferedReader bReader = new BufferedReader(new FileReader(stopWordsFile));
 		String line;
-		while ((line = breader.readLine()) != null) {
+		while ((line = bReader.readLine()) != null) {
 			stopWordsList.add(line.toString().trim());
 		}
-		breader.close();
+		bReader.close();
 		return stopWordsList;
 	}
 	
@@ -45,13 +44,11 @@ public class Launcher {
 			agent.visit(weblink);
 			Document webDoc = agent.doc;
 			WebsiteScraper webScraper;
-			Elements questions = webDoc
-					.findEvery("<div class=question-summary>");
+			Elements questions = webDoc.findEvery("<div class=question-summary>");
 			Iterator<Element> questionsIterator = questions.iterator();
 			while (questionsIterator.hasNext()) {
 				Element question = questionsIterator.next();
-				String link = question.findFirst("<a>").getAt("href")
-						.toString();
+				String link = question.findFirst("<a>").getAt("href").toString();
 				agent.visit(link);
 				webScraper = new WebsiteScraper(agent.doc, getStopWords());
 				System.out.println("****Question Description Tokens****");

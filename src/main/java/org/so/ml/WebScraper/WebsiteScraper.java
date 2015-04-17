@@ -16,7 +16,7 @@ public class WebsiteScraper {
 	protected List<String> qTags = new ArrayList<String>();
 
 	/* List of code fragments in the question */
-	protected List<String> qcodeSegments = new ArrayList<String>();
+	protected List<String> qCodeSegments = new ArrayList<String>();
 	/* List of Tokens of the Question Code Segments */
 	List<String> qCodeTokens = new ArrayList<String>();
 
@@ -70,7 +70,7 @@ public class WebsiteScraper {
 		Elements codeElements = question.findEvery("<pre>");
 		Iterator<Element> codeIterator = codeElements.iterator();
 		while (codeIterator.hasNext()) {
-			qcodeSegments.add(codeIterator.next().getFirst("<code>")
+			qCodeSegments.add(codeIterator.next().getFirst("<code>")
 					.innerText());
 		}
 
@@ -81,7 +81,8 @@ public class WebsiteScraper {
 			qDescription += textIterator.next().innerText();
 		}
 
-		qCodeTokenizer(qcodeSegments,stopWordsList);/* Tokenize the code */
+		/* Tokenize the code */
+		qCodeTokenizer(qCodeSegments, stopWordsList);
 		/* Tokenize the description of the question */
 		qDescriptionTokenizer(qDescription, stopWordsList);
 
@@ -100,8 +101,9 @@ public class WebsiteScraper {
 		StringTokenizer tokenizer = new StringTokenizer(qDescription, " ");
 		while (tokenizer.hasMoreTokens()) {
 			String tok = tokenizer.nextToken();
-			if (tok.trim().length() > 1) {
-				qDescriptionTokens.add(tok.trim());
+			String currentToken = tok.trim();
+			if (currentToken.length() > 1) {
+				qDescriptionTokens.add(currentToken);
 			}
 		}
 		/* remove the stop words */
@@ -126,8 +128,9 @@ public class WebsiteScraper {
 			StringTokenizer tokenizer = new StringTokenizer(codeBlock, " ");
 			while (tokenizer.hasMoreTokens()) {
 				String tok = tokenizer.nextToken();
-				if (tok.trim().length() > 1) {
-					qCodeTokens.add(tok.trim());
+				String currentToken = tok.trim();
+				if (currentToken.length() > 1) {
+					qCodeTokens.add(currentToken);
 				}
 			}
 		}
