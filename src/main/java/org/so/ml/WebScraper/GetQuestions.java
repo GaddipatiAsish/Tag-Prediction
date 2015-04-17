@@ -21,7 +21,7 @@ import com.jaunt.UserAgent;
 public class GetQuestions {
 	
 	// No of questions to fetch in total for a tag
-	private int totalQsPerTag = 60;
+	private int totalQsPerTag;
 	// DB properties string
 	private String dbProps = "couchdb.properties";
 	// DB Object
@@ -30,7 +30,9 @@ public class GetQuestions {
 	/**
 	 * Constructor
 	 */
-	public GetQuestions() {
+	public GetQuestions(int totalQsPerTag) {
+		// Total questions per tag
+		this.totalQsPerTag = totalQsPerTag;
 		// Connect to the Database
 		this.dbClient = new CouchDbClient(dbProps);
 	}
@@ -80,11 +82,11 @@ public class GetQuestions {
 	public static void main(String[] args) throws ResponseException, NotFound, IOException {
 		
 		// Create GetQuestions Object
-		GetQuestions getQs = new GetQuestions();
+		GetQuestions getQs = new GetQuestions(30);
 
 		// List of tags to get questions from
 		List<String> tagList = new ArrayList<String>();
-		tagList.add("python");
+		tagList.add("javascript");
 		
 		// Construct the URL
 		String urlMain = "http://stackoverflow.com/questions/tagged/";
@@ -92,14 +94,17 @@ public class GetQuestions {
 		// create view agent
 		UserAgent agent = new UserAgent();
 		
+		// RegEx pattern for unique identifier of question
+//		String uidPattern = "(http://stackoverflow.com/questions/)(\\d+)(/.*)";
+		
 		// Iterate over the tags to get the pages
 		Iterator<String> tagIterator = tagList.iterator();
 		while(tagIterator.hasNext()) {
 			// Append the URL
-			urlMain = urlMain + tagIterator.next();
+			urlMain += tagIterator.next();
 			
 			// Get Questions
-			for(int page = 3; page <= getQs.totalQsPerTag/15; ++page) {
+			for(int page = 1; page <= getQs.totalQsPerTag/15; ++page) {
 				//Append the URL
 				urlMain += "?page="+ page +"&sort=newest&pagesize=15";
 				// visit the webpage
@@ -112,17 +117,24 @@ public class GetQuestions {
 				Elements questions = webDoc.findEvery("<div class=question-summary>");
 				Iterator<Element> questionsIterator = questions.iterator();
 				while (questionsIterator.hasNext()) {
+					// Get the question block
 					Element question = questionsIterator.next();
+					// question linkS
 					String link = question.findFirst("<a>").getAt("href").toString();
+					// visit the link
 					agent.visit(link);
+					
 					// Send document to web scrapper to get question, tags & code parts
 					webScraper = new WebsiteScraper(agent.doc, getQs.getStopWords());
 					
 					// Generate a Json object to put into database
 					JsonObject qJson = new JsonObject();
 					
-					// Fill the qJson
-					qJson.addProperty("type", "question");
+					/* Fill the qJson */
+					// Get the unique id for the link
+//					qJson.addProperty("_id", link.replaceAll(uidPattern, "$2"));
+//					qJson.addProperty("type", "question");	// Fill the type
+					
 					// Add Tags
 					List<String> qTags = webScraper.qTags;
 					for(int t=1; t<=qTags.size(); t++) {
