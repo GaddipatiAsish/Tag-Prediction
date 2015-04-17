@@ -78,15 +78,15 @@ public class DBAccess {
 	
 	/**
 	 * Return key using the id (from view result)
-	 * @param id
+	 * @param rowNo
 	 * @return
 	 */
-	public String viewResultGetKey(int id) {
+	public String viewResultGetKey(int rowNo) {
 		// create result string
 		String result = "";
 		try {
-			if(noOfRowsInView > id) {
-				result = viewResult.getRows().get(id).getKey();
+			if(noOfRowsInView > rowNo) {
+				result = viewResult.getRows().get(rowNo).getKey();
 			}
 			else {
 				throw new CouchDbException("Accessing a result row which is not present.\n Index Out of Bounds!\n");
@@ -104,15 +104,15 @@ public class DBAccess {
 	
 	/**
 	 * Return Value using the id (from view result)
-	 * @param id
+	 * @param rowNo
 	 * @return
 	 */
-	public String viewResultGetValue(int id) {
+	public String viewResultGetValue(int rowNo) {
 		// create result string
 		String result = "";
 		try {
-			if(noOfRowsInView > id) {
-				result = viewResult.getRows().get(id).getValue();
+			if(noOfRowsInView > rowNo) {
+				result = viewResult.getRows().get(rowNo).getValue();
 			}
 			else {
 				throw new CouchDbException("Accessing a result row which is not present.\n Index Out of Bounds!\n");
