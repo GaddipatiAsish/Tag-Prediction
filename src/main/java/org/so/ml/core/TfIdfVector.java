@@ -8,16 +8,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.google.gson.JsonObject;
-
 import weka.core.matrix.Matrix;
 
 public class TfIdfVector {
 	/* list of words that are considered to be in feature set. */
 	List<String> featureWords = new ArrayList<String>();
 	/* DBAccess Object */
-	DBAccess dbAccess = new DBAccess();
-
+	DBAccess dbAccess;
+	
 	/**
 	 * TfIdf constructor gets the list of words that are considered to be in
 	 * feature set
@@ -26,43 +24,9 @@ public class TfIdfVector {
 	 */
 	public TfIdfVector(List<String> featureWords) {
 		this.featureWords = featureWords;
-	}
-
-	boolean pushToDb(Matrix tfIdfVector, List<String> qTags) {
-		/* Create a Json Document for Sparse Feature Vector */
-		JsonObject jsonSparse = new JsonObject();
-		/* Create a Json Document for Full Feature Vector */
-		JsonObject jsonFull = new JsonObject();
-
-		String featureVectorFull = new String();
-		String featureVectorSparse = new String();
-
-		/* Generate the spare and full feature strings */
-		for (int row = 0; row < tfIdfVector.getRowDimension(); row++) {
-			if (tfIdfVector.get(row, 0) != 0) {
-				featureVectorSparse += row + ":" + tfIdfVector.get(row, 0)
-						+ " ";
-			}
-			featureVectorFull += row + ":" + tfIdfVector.get(row, 0) + " ";
-		}
-
-		/* compose the Json Documents */
-		jsonFull.addProperty("type", "featureVectorFull");
-		jsonSparse.addProperty("type", "featureVectorSparse");
-
-		for (int i = 1; i <= qTags.size(); i++) {
-			jsonFull.addProperty("tag" + i, qTags.get(i - 1));
-			jsonSparse.addProperty("tag" + i, qTags.get(i - 1));
-		}
-
-		jsonFull.addProperty("featureVector", featureVectorFull);
-		jsonSparse.addProperty("featureVector", featureVectorSparse);
-
-		/* save the Json Doc's to Database */
-		if (dbAccess.save(jsonFull) && dbAccess.save(jsonSparse))
-			return true;
-		else
-			return false;
+		// For DB
+		dbAccess = new DBAccess();
+		dbAccess.connect("couchdb.properties");
 	}
 
 	/**
@@ -78,9 +42,9 @@ public class TfIdfVector {
 	Matrix compute(String question) {
 
 		Matrix tfIdfVector = new Matrix(featureWords.size(), 1, 0);
-		List<String> qFeatures = new ArrayList<String>();
-
+		
 		/* Break the String into Tokens */
+		List<String> qFeatures = new ArrayList<String>();
 		StringTokenizer tokenizor = new StringTokenizer(question, " ");
 		while (tokenizor.hasMoreTokens()) {
 			qFeatures.add(tokenizor.nextToken());
@@ -88,16 +52,16 @@ public class TfIdfVector {
 
 		/* Compute the Term Frequency for each Word in a given Question */
 		/* loop through the feature words to compute the tf -idf */
-		for (int wordCount = 0; wordCount < featureWords.size(); wordCount++) {
+		for (int wordCount = 0, max = featureWords.size(); wordCount < max; wordCount++) {
 			/* Get the term */
 			String term = featureWords.get(wordCount);
 			/* Get the term frequency */
 			int freq = Collections.frequency(qFeatures, term);
 			double tf = freq > 0 ? 1 + Math.log(freq) : 0;
 			/* Get the IDF of the term from the db */
-			dbAccess.runView("idf/get_idf");
-			double idf = Double.parseDouble(dbAccess.viewResultGetValue(0)
-					.trim());
+			dbAccess.runView("idfs/get_idf", 0, term);
+			String idfValue = ((String) dbAccess.viewResultGetValue(0, 0));
+			double idf = Double.parseDouble(idfValue);
 			/* push the terms' tf-idf value to tf-idf Matrix */
 			tfIdfVector.set(wordCount, 0, tf * idf);
 		}

@@ -32,12 +32,12 @@ public class FeatureWords {
 		db.connect(dbPropFile);
 		
 		// Run View to get all questions
-		db.runView("all_docs/all_questions");
+		db.runView("all_docs/all_questions", 2);
 		long noOfRows = db.noOfRowsInView;
 		
 		// For each question, get all the words and update HashMap
 		for(int d=0; d<noOfRows; d++) {
-			String description = db.viewResultGetKey(d);
+			String description = (String) db.viewResultGetKey(d, 2);
 			updateHashMap(description);
 		}
 		

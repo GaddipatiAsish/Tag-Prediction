@@ -32,10 +32,11 @@ public class App
     	db.connect("couchdb.properties");
     	
     	// view
-    	db.runView("idfs/get_idf", "class");
+    	db.runView("idfs/get_idf", 0, "sub");
+    	
     	// get result
     	System.out.println("No of rows: "+db.noOfRowsInView);
-    	System.out.println(db.viewResultGetValue(0));
-    	System.out.println(db.viewResultGetValue(1));
+    	System.out.println(db.viewResultGetValue(0, 0));
+//    	System.out.println(db.viewResultGetValue(1, 0));
     }
 }

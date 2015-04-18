@@ -11,11 +11,13 @@ public class DBAccess {
 
 	// Database
 	CouchDbClient dbClient;
-	
+
 	// View & ViewResult
 	View view;
 	ViewResult<String, String, JsonObject> viewResult;
-	ViewResult<String[], String, JsonObject> viewResultArray;
+	ViewResult<String[], String, JsonObject> viewResultKeyArray;
+	ViewResult<String, String[], JsonObject> viewResultValueArray;
+	ViewResult<String[], String[], JsonObject> viewResultBothArrays;
 	public long noOfRowsInView = 0;
 
 	/**
@@ -33,6 +35,14 @@ public class DBAccess {
 		else {
 			return 0;
 		}
+	}
+	
+	/**
+	 * Close the DB Connection
+	 */
+	public void close() {
+		// close db connection
+		dbClient.shutdown();
 	}
 
 	/**
@@ -59,34 +69,69 @@ public class DBAccess {
 	 * @param viewName
 	 * @return true if run successfully else false
 	 */
-	public boolean runView(String viewName) {
+	public boolean runView(String viewName, int stringArrayId) {
 		try {
 			// Run the given view
 			view = dbClient.view(viewName);
 			// Assign to public variables
-			viewResult = view.queryView(String.class, String.class, JsonObject.class);
-			noOfRowsInView = viewResult.getTotalRows();
+			if(stringArrayId == 0) {
+				viewResult = view.queryView(String.class, String.class, JsonObject.class);
+				noOfRowsInView = viewResult.getTotalRows();
+			}
+			else if(stringArrayId == 1) {
+				viewResultKeyArray = view.queryView(String[].class, String.class, JsonObject.class);
+				noOfRowsInView = viewResultKeyArray.getTotalRows();
+			}
+			else if(stringArrayId == 2) {
+				viewResultValueArray = view.queryView(String.class, String[].class, JsonObject.class);
+				noOfRowsInView = viewResultValueArray.getTotalRows();
+			}
+			else if(stringArrayId == 3) {
+				viewResultBothArrays = view.queryView(String[].class, String[].class, JsonObject.class);
+				noOfRowsInView = viewResultBothArrays.getTotalRows();
+			}
+			else {
+				throw new CouchDbException("For runView, stringArrayId can be either 0, 1, 2 or 3 depending if any of key, value are arrays");
+			}
 		}
 		catch(CouchDbException excep) {
 			System.out.println("Exception while running a view & assigning to viewResult:- ");
 			System.out.println(viewName.toString());
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Runs the given View & filter with the key provided
 	 * @param viewName
 	 * @return true if run successfully else false
 	 */
-	public boolean runView(String viewName, String key) {
+	public boolean runView(String viewName, int stringArrayId, String key) {
 		try {
 			// Run the given view
 			view = dbClient.view(viewName).key(key);
 			// Assign to public variables
-			viewResult = view.queryView(String.class, String.class, JsonObject.class);
+			if(stringArrayId == 0) {
+				viewResult = view.queryView(String.class, String.class, JsonObject.class);
+				noOfRowsInView = viewResult.getTotalRows();
+			}
+			else if(stringArrayId == 1) {
+				viewResultKeyArray = view.queryView(String[].class, String.class, JsonObject.class);
+				noOfRowsInView = viewResultKeyArray.getTotalRows();
+			}
+			else if(stringArrayId == 2) {
+				viewResultValueArray = view.queryView(String.class, String[].class, JsonObject.class);
+				noOfRowsInView = viewResultValueArray.getTotalRows();
+			}
+			else if(stringArrayId == 3) {
+				viewResultBothArrays = view.queryView(String[].class, String[].class, JsonObject.class);
+				noOfRowsInView = viewResultBothArrays.getTotalRows();
+			}
+			else {
+				throw new CouchDbException("For runView, stringArrayId can be either 0, 1, 2 or 3 depending if any of key, value are arrays");
+			}
 			noOfRowsInView = viewResult.getTotalRows();
 		}
 		catch(CouchDbException excep) {
@@ -94,21 +139,33 @@ public class DBAccess {
 			System.out.println(viewName.toString());
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Return key using the id (from view result)
 	 * @param rowNo
 	 * @return
 	 */
-	public String viewResultGetKey(int rowNo) {
+	public Object viewResultGetKey(int rowNo, int stringArrayId) {
 		// create result string
 		String result = "";
+		String[] resultArray = {""};
+		
 		try {
 			if(noOfRowsInView > rowNo) {
-				result = viewResult.getRows().get(rowNo).getKey();
+				if(stringArrayId == 0)
+					result = viewResult.getRows().get(rowNo).getKey();
+				else if(stringArrayId == 1)
+					resultArray = viewResultKeyArray.getRows().get(rowNo).getKey();
+				else if(stringArrayId == 2)
+					result = viewResultValueArray.getRows().get(rowNo).getKey();
+				else if(stringArrayId == 3)
+					resultArray = viewResultBothArrays.getRows().get(rowNo).getKey();
+				else {
+					throw new CouchDbException("For viewResultGetKey, stringArrayId can be either 1, 2 or 3 depending if any of key, value are arrays");
+				}
 			}
 			else {
 				throw new CouchDbException("Accessing a result row which is not present.\n Index Out of Bounds!\n");
@@ -123,22 +180,37 @@ public class DBAccess {
 			System.out.println("Index Out of Bounds! Accessing a result row which is not present.");
 			return null;
 		}
-		
+
 		// return
-		return result;
+		if(stringArrayId == 0 || stringArrayId == 2)
+			return result;
+		else
+			return resultArray;
 	}
-	
+
 	/**
 	 * Return Value using the id (from view result)
 	 * @param rowNo
 	 * @return
 	 */
-	public String viewResultGetValue(int rowNo) {
+	public Object viewResultGetValue(int rowNo, int stringArrayId) {
 		// create result string
 		String result = "";
+		String[] resultArray = {""};
+		
 		try {
 			if(noOfRowsInView > rowNo) {
-				result = viewResult.getRows().get(rowNo).getValue();
+				if(stringArrayId == 0)
+					result = viewResult.getRows().get(rowNo).getValue();
+				else if(stringArrayId == 1)
+					result = viewResultKeyArray.getRows().get(rowNo).getValue();
+				else if(stringArrayId == 2)
+					resultArray = viewResultValueArray.getRows().get(rowNo).getValue();
+				else if(stringArrayId == 3)
+					resultArray = viewResultBothArrays.getRows().get(rowNo).getValue();
+				else {
+					throw new CouchDbException("For viewResultGetKey, stringArrayId can be either 1, 2 or 3 depending if any of key, value are arrays");
+				}
 			}
 			else {
 				throw new CouchDbException("Accessing a result row which is not present.\n Index Out of Bounds!\n");
@@ -153,8 +225,11 @@ public class DBAccess {
 			System.out.println("Index Out of Bounds! Accessing a result row which is not present.");
 			return null;
 		}
-		
+
 		// return
-		return result;
+		if(stringArrayId == 0 || stringArrayId == 1)
+			return result;
+		else
+			return resultArray;
 	}
 }

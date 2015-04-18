@@ -1,11 +1,12 @@
 package org.so.ml.core;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.JsonObject;
 
 import weka.core.matrix.Matrix;
 
@@ -17,6 +18,10 @@ import weka.core.matrix.Matrix;
  *
  */
 public class FeatureVectorGenerator {
+	
+	// DB Access
+	static DBAccess dbAccess;
+	
 	/**
 	 * readFeatureWords method reads the feature words that are considered for
 	 * feature vector from the file
@@ -35,31 +40,71 @@ public class FeatureVectorGenerator {
 		breader.close();
 		return featureWords;
 	}
+	
+	/**
+	 * 
+	 * @param tfIdfVector
+	 * @param qTags
+	 * @return
+	 */
+	static boolean pushToDb(Matrix tfIdfVector, String[] qTags) {
+		
+		/* Create a Json Document for Full Feature Vector */
+		JsonObject jsonO = new JsonObject();
+		jsonO.addProperty("type", "feature_vector");
 
-	public static void main(String args[]) {
+		String featureVectorFull = new String();
+		String featureVectorSparse = new String();
+
+		/* Generate the spare and full feature strings */
+		for (int row = 0; row < tfIdfVector.getRowDimension(); row++) {
+			if (tfIdfVector.get(row, 0) != 0) {
+				featureVectorSparse += row + ":" + tfIdfVector.get(row, 0) + " ";
+			}
+			featureVectorFull += row + ":" + tfIdfVector.get(row, 0) + " ";
+		}
+
+		/* compose the Json Documents */
+		for (int i = 1; i <= qTags.length; i++) {
+			jsonO.addProperty("tag" + i, qTags[i - 1]);
+		}
+
+		jsonO.addProperty("full", featureVectorFull);
+		jsonO.addProperty("sparse", featureVectorSparse);
+
+		/* save the Json Doc's to Database */
+		if (dbAccess.save(jsonO))
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
+	public static void main(String args[]) throws IOException {
 		/* Connect to Database */
-		DBAccess dbAccess = new DBAccess();
+		dbAccess = new DBAccess();
+		dbAccess.connect("couchdb.properties");
 		
 		/* Run the View */
-		dbAccess.runView("all_docs/all_questions");
+		dbAccess.runView("all_docs/all_questions", 2);
 		
 		/* read the feature words considered for feature vector from the file*/
 		List<String> featureWords = readFeatureWords();
 		
 		/* loop through the results */
-		TfIdfVector tfidf;
-		for (int row = 0; row < dbAccess.noOfRowsInView; row++) {
+		TfIdfVector tfidf = new TfIdfVector(featureWords);
+		for (int doc = 0; doc < dbAccess.noOfRowsInView; doc++) {
 			/*Get the Question and the Corresponding Tags*/
-			String question = dbAccess.viewResultGetKey(row);
-			String[5] qTags= dbAccess.viewResultGetValue(row);
+			String question = (String) dbAccess.viewResultGetKey(doc, 2);
+			String[] qTags = (String[]) dbAccess.viewResultGetValue(doc, 2);
 			
-			tfidf = new TfIdfVector(featureWords);
 			/*Get the tf-Idf feature vector of given question*/
-			Matrix tfidfVector= tfidf.compute(question);
-			boolean status = tfidf.pushToDb(tfidfVector, qTags);
-						
+			Matrix tfidfVector = tfidf.compute(question);
+			boolean status = pushToDb(tfidfVector, qTags);
 		}
-		
-		
 	}
 }
