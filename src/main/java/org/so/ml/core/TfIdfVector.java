@@ -6,12 +6,13 @@ package org.so.ml.core;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import com.google.gson.JsonObject;
 
 import weka.core.matrix.Matrix;
 
-public class TfIdf {
+public class TfIdfVector {
 	/* list of words that are considered to be in feature set. */
 	List<String> featureWords = new ArrayList<String>();
 	/* DBAccess Object */
@@ -23,7 +24,7 @@ public class TfIdf {
 	 * 
 	 * @param featureWords
 	 */
-	public TfIdf(List<String> featureWords) {
+	public TfIdfVector(List<String> featureWords) {
 		this.featureWords = featureWords;
 	}
 
@@ -68,16 +69,24 @@ public class TfIdf {
 	 * computes method computes the tf-idf vector of a given question and
 	 * returns it.
 	 * 
-	 * @param qFeatures
-	 *            list of words that are tokenized from a given question
+	 * @param question
+	 * 
 	 * @param featureWords
 	 * 
 	 * @return tf-idf vector
 	 */
-	Matrix compute(List<String> qFeatures) {
-		Matrix tfIdfVector = new Matrix(featureWords.size(), 1, 0);
-		/* Compute the Term Frequency for each Word in a given Question */
+	Matrix compute(String question) {
 
+		Matrix tfIdfVector = new Matrix(featureWords.size(), 1, 0);
+		List<String> qFeatures = new ArrayList<String>();
+
+		/* Break the String into Tokens */
+		StringTokenizer tokenizor = new StringTokenizer(question, " ");
+		while (tokenizor.hasMoreTokens()) {
+			qFeatures.add(tokenizor.nextToken());
+		}
+
+		/* Compute the Term Frequency for each Word in a given Question */
 		/* loop through the feature words to compute the tf -idf */
 		for (int wordCount = 0; wordCount < featureWords.size(); wordCount++) {
 			/* Get the term */
