@@ -1,4 +1,4 @@
-package org.so.ml.PredictTags;
+package org.so.ml.core;
 
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbException;
@@ -77,6 +77,28 @@ public class DBAccess {
 	}
 	
 	/**
+	 * Runs the given View & filter with the key provided
+	 * @param viewName
+	 * @return true if run successfully else false
+	 */
+	public boolean runView(String viewName, String key) {
+		try {
+			// Run the given view
+			view = dbClient.view(viewName).key(key);
+			// Assign to public variables
+			viewResult = view.queryView(String.class, String.class, JsonObject.class);
+			noOfRowsInView = viewResult.getTotalRows();
+		}
+		catch(CouchDbException excep) {
+			System.out.println("Exception while running a view & assigning to viewResult:- ");
+			System.out.println(viewName.toString());
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Return key using the id (from view result)
 	 * @param rowNo
 	 * @return
@@ -95,6 +117,10 @@ public class DBAccess {
 		catch(CouchDbException excep) {
 			System.out.println("Exception in Getting Key from Result Rows");
 			System.out.println(excep);
+			return null;
+		}
+		catch(IndexOutOfBoundsException excep) {
+			System.out.println("Index Out of Bounds! Accessing a result row which is not present.");
 			return null;
 		}
 		
@@ -121,6 +147,10 @@ public class DBAccess {
 		catch(CouchDbException excep) {
 			System.out.println("Exception in Getting Key from Result Rows");
 			System.out.println(excep);
+			return null;
+		}
+		catch(IndexOutOfBoundsException excep) {
+			System.out.println("Index Out of Bounds! Accessing a result row which is not present.");
 			return null;
 		}
 		

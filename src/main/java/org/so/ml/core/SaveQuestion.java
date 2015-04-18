@@ -1,4 +1,4 @@
-package org.so.ml.PredictTags;
+package org.so.ml.core;
 
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.Response;

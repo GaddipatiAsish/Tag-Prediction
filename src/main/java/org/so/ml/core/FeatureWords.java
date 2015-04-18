@@ -1,4 +1,4 @@
-package org.so.ml.PredictTags;
+package org.so.ml.core;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
+
 
 public class FeatureWords {
 	
