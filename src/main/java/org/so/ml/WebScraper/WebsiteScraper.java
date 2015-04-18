@@ -10,6 +10,13 @@ import com.jaunt.Element;
 import com.jaunt.Elements;
 import com.jaunt.NotFound;
 
+/**
+ * WebsiteScraper takes the website url as input and reads the specific elements
+ * like question question description and tags
+ * 
+ * @author AsishKumar
+ *
+ */
 public class WebsiteScraper {
 
 	/* list that stores the tags of the question */
@@ -25,6 +32,9 @@ public class WebsiteScraper {
 	/* List of Tokens of the Question Description */
 	protected List<String> qDescriptionTokens = new ArrayList<String>();
 
+	/* question header */
+	protected String qHeader;
+
 	/**
 	 * WebsiteScraper method takes the document of website as input and parses
 	 * it into question, code and tags
@@ -34,6 +44,10 @@ public class WebsiteScraper {
 	 */
 	public WebsiteScraper(Document website, List<String> stopWordsList)
 			throws NotFound {
+		/* Get the Question in question-header element */
+		Element qHeaderElement = website.findFirst("<div id=question-header>");
+		qHeader = qHeaderElement.findFirst("<a>").getText();
+		System.out.println("Question Header : "+ qHeader);
 		/* get the postcell tag where the question resides. */
 		Elements postcell = website.findEvery("<td class=postcell");
 		/* traverse through the postcell tags to get the content of the Question */
@@ -95,6 +109,9 @@ public class WebsiteScraper {
 	 * @param qtext
 	 */
 	void qDescriptionTokenizer(String qDescription, List<String> stopWordsList) {
+		/*add the question to question description*/
+		qDescription+=qHeader;
+		
 		/* replace the special characters with a space */
 		qDescription = qDescription.replaceAll("[^a-zA-Z0-9]", " ");
 		/* tokenize and add tokens to list tokens */
@@ -137,7 +154,5 @@ public class WebsiteScraper {
 		/* remove the stop words */
 		qCodeTokens.removeAll(stopWordsList);
 	}
-
-
 
 }

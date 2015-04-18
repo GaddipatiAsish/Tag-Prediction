@@ -124,7 +124,7 @@ public class GetQuestions {
 					// visit the link
 					agent.visit(link);
 					
-					// Send document to web scrapper to get question, tags & code parts
+					// Send document to web scrapper to get question, question description tags & code parts
 					webScraper = new WebsiteScraper(agent.doc, getQs.getStopWords());
 					
 					// Generate a Json object to put into database
