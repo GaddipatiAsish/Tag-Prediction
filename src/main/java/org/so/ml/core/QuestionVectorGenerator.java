@@ -17,7 +17,7 @@ import weka.core.matrix.Matrix;
  * @author AsishKumar
  *
  */
-public class FeatureVectorGenerator {
+public class QuestionVectorGenerator {
 	
 	// DB Access
 	static DBAccess dbAccess;
@@ -47,7 +47,7 @@ public class FeatureVectorGenerator {
 	 * @param qTags
 	 * @return
 	 */
-	static boolean pushToDb(Matrix tfIdfVector, String[] qTags) {
+	static boolean writeToDb(Matrix tfIdfVector, String[] qTags) {
 		
 		/* Create a Json Document for Full Feature Vector */
 		JsonObject jsonO = new JsonObject();
@@ -59,9 +59,9 @@ public class FeatureVectorGenerator {
 		/* Generate the spare and full feature strings */
 		for (int row = 0; row < tfIdfVector.getRowDimension(); row++) {
 			if (tfIdfVector.get(row, 0) != 0) {
-				featureVectorSparse += row + ":" + tfIdfVector.get(row, 0) + " ";
+				featureVectorSparse += (row+1) + ":" + tfIdfVector.get(row, 0) + " ";
 			}
-			featureVectorFull += row + ":" + tfIdfVector.get(row, 0) + " ";
+			featureVectorFull += (row+1) + ":" + tfIdfVector.get(row, 0) + " ";
 		}
 
 		/* compose the Json Documents */
@@ -104,7 +104,7 @@ public class FeatureVectorGenerator {
 			
 			/*Get the tf-Idf feature vector of given question*/
 			Matrix tfidfVector = tfidf.compute(question);
-			boolean status = pushToDb(tfidfVector, qTags);
+			writeToDb(tfidfVector, qTags);
 		}
 	}
 }

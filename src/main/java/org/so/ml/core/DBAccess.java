@@ -10,14 +10,14 @@ import com.google.gson.JsonObject;
 public class DBAccess {
 
 	// Database
-	CouchDbClient dbClient;
+	private CouchDbClient dbClient;
 
 	// View & ViewResult
-	View view;
-	ViewResult<String, String, JsonObject> viewResult;
-	ViewResult<String[], String, JsonObject> viewResultKeyArray;
-	ViewResult<String, String[], JsonObject> viewResultValueArray;
-	ViewResult<String[], String[], JsonObject> viewResultBothArrays;
+	private View view;
+	private ViewResult<String, String, JsonObject> viewResult;
+	private ViewResult<String[], String, JsonObject> viewResultKeyArray;
+	private ViewResult<String, String[], JsonObject> viewResultValueArray;
+	private ViewResult<String[], String[], JsonObject> viewResultBothArrays;
 	public long noOfRowsInView = 0;
 
 	/**
