@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 import com.google.gson.JsonObject;
 
 import weka.core.matrix.Matrix;
@@ -19,6 +18,8 @@ public class TfIdf {
 	DBAccess dbAccess = new DBAccess();
 
 	/**
+	 * TfIdf constructor gets the list of words that are considered to be in
+	 * feature set
 	 * 
 	 * @param featureWords
 	 */
@@ -26,7 +27,7 @@ public class TfIdf {
 		this.featureWords = featureWords;
 	}
 
-	void pushToDb(Matrix tfIdfVector,List<String> qTags) {
+	boolean pushToDb(Matrix tfIdfVector, List<String> qTags) {
 		/* Create a Json Document for Sparse Feature Vector */
 		JsonObject jsonSparse = new JsonObject();
 		/* Create a Json Document for Full Feature Vector */
@@ -43,11 +44,24 @@ public class TfIdf {
 			}
 			featureVectorFull += row + ":" + tfIdfVector.get(row, 0) + " ";
 		}
-		
-		/*compose the Json Documents*/
+
+		/* compose the Json Documents */
 		jsonFull.addProperty("type", "featureVectorFull");
 		jsonSparse.addProperty("type", "featureVectorSparse");
-		
+
+		for (int i = 1; i <= qTags.size(); i++) {
+			jsonFull.addProperty("tag" + i, qTags.get(i - 1));
+			jsonSparse.addProperty("tag" + i, qTags.get(i - 1));
+		}
+
+		jsonFull.addProperty("featureVector", featureVectorFull);
+		jsonSparse.addProperty("featureVector", featureVectorSparse);
+
+		/* save the Json Doc's to Database */
+		if (dbAccess.save(jsonFull) && dbAccess.save(jsonSparse))
+			return true;
+		else
+			return false;
 	}
 
 	/**
