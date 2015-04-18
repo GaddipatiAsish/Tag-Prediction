@@ -36,6 +36,13 @@ public class WebsiteScraper {
 	protected String qHeader;
 
 	/**
+	 * Website scrapper simple constructor.
+	 * used for Tag grabbing (like top 100 tags etc)
+	 */
+	public WebsiteScraper() {
+	}
+	
+	/**
 	 * WebsiteScraper method takes the document of website as input and parses
 	 * it into question, code and tags
 	 * 
@@ -154,5 +161,26 @@ public class WebsiteScraper {
 		/* remove the stop words */
 		qCodeTokens.removeAll(stopWordsList);
 	}
-
+	
+	/**
+	 * Get All the tags from the given page
+	 * @param webpage
+	 * @return List of strings (i.e tags)
+	 * @throws NotFound
+	 */
+	public List<String> getAllTags(Document webpage) throws NotFound {
+		// tag List
+		List<String> list = new ArrayList<String>();
+		// Get all the tags from given page
+		Element tagsList = webpage.findFirst("<div id=\"tags_list\">");
+		Element tagsTable = tagsList.findFirst("<table id=\"tags-browser\">");
+		Elements tagCell = tagsTable.findEvery("<td class=\"tag-cell\">");
+		Iterator<Element> tagIterator = tagCell.iterator();
+		while(tagIterator.hasNext()) {
+			String tag = tagIterator.next().findFirst("<a>").getText();
+			list.add(tag);
+		}
+		// return tag list
+		return list;
+	}
 }

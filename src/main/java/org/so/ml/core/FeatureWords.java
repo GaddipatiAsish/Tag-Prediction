@@ -17,7 +17,8 @@ public class FeatureWords {
 	private static HashMap<String, Integer> wordHashMap = new HashMap<String, Integer>(3000);
 	// threshold value for words to be written in output file
 	private static int wordThreshold = 3;
-
+	
+	// TODO: Feature Words for CODE not added into features yet!
 	/**
 	 * Get Feature Words
 	 * @param args

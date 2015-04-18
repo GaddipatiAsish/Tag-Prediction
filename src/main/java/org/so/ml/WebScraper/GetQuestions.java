@@ -133,7 +133,7 @@ public class GetQuestions {
 					/* Fill the qJson */
 					// Get the unique id for the link
 //					qJson.addProperty("_id", link.replaceAll(uidPattern, "$2"));
-//					qJson.addProperty("type", "question");	// Fill the type
+					qJson.addProperty("type", "question");	// Fill the type
 					
 					// Add Tags
 					List<String> qTags = webScraper.qTags;

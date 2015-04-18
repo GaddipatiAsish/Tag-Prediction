@@ -8,6 +8,7 @@
 .bin/*
 .metadata/*
 .metadata
+./data/svm/*
 
 # Compiled source #
 *.class

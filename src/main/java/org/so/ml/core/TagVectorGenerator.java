@@ -74,7 +74,7 @@ public class TagVectorGenerator {
 		}
 		jsonO.addProperty("vector", fV);
 		
-		// save to db
+		// save to DB
 		return db.save(jsonO);
 	}
 
@@ -96,6 +96,7 @@ public class TagVectorGenerator {
 				String tag = tagList.get(t);
 				String questions = getTagQuestions(tag);
 				// TODO: yet to compute Idf values for the tag's total questions
+				// TODO: Code part of feature words is yet to be added
 				Matrix featureVector = tfIdf.compute(questions);
 				writeToDB(featureVector, tag);
 			}
@@ -104,5 +105,4 @@ public class TagVectorGenerator {
 			System.out.println("IO Exception: " + excep.toString());
 		}
 	}
-
 }

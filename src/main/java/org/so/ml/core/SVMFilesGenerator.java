@@ -25,7 +25,7 @@ public class SVMFilesGenerator {
 	 */
 	static List<String> getAllTags() throws Exception {
 		List<String> allTags = new ArrayList<String>();
-		String file = "";
+		String file = "./data/TopTags.result";
 		BufferedReader breader = new BufferedReader(new FileReader(file));
 		String tag;
 		while ((tag = breader.readLine()) != null) {
@@ -36,6 +36,7 @@ public class SVMFilesGenerator {
 	}
 
 	public static void main(String args[]) throws Exception {
+		/* run view in DB */
 		DBAccess dbAccess = new DBAccess();
 		dbAccess.connect("couchdb.properties");
 		dbAccess.runView("feature_vector/sparse", 2);
@@ -51,21 +52,17 @@ public class SVMFilesGenerator {
 
 			/* loop through the results of the feature_vector/sparse view */
 			for (long result = 0, max = dbAccess.noOfRowsInView; result < max; result++) {
-				String[] qtagArray = (String[]) dbAccess.viewResultGetValue(
-						(int) result, 2);
+				String[] qtagArray = (String[]) dbAccess.viewResultGetValue((int) result, 2);
 				List<String> qtagList = Arrays.asList(qtagArray);
 				String row;
 				/* search of the question tags contains the specific tag */
 				if (qtagList.contains(allTags.get(tag))) {/* found : label 1 */
-					row = "+1 "
-							+ dbAccess.viewResultGetKey((int) result, 2)
-									.toString().trim();
-				} else {/* label -1 */
-					row = "-1 "
-							+ dbAccess.viewResultGetKey((int) result, 2)
-									.toString().trim();
+					row = "+1 " + dbAccess.viewResultGetKey((int) result, 2).toString().trim();
+				} 
+				else {/* label -1 */
+					row = "-1 " + dbAccess.viewResultGetKey((int) result, 2).toString().trim();
 				}
-				bwriter.append(row);
+				bwriter.append(row+"\n");
 			}
 
 			/* close the file */
