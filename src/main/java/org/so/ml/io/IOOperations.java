@@ -12,10 +12,15 @@ public class IOOperations {
 	 * 
 	 * @return the status of the write operation
 	 */
-	boolean writeAnSvmRow(Matrix FeatureVector) {
+	boolean writeAnSvmRow(Matrix featureVector) {
+		
 		boolean status = false;
-		for (int row = 0; row < FeatureVector.getRowDimension(); row++) {
-			
+		
+		String line= new String();
+		for (int row = 0; row < featureVector.getRowDimension(); row++) {
+			if (featureVector.get(row, 0) != 0) {
+				line+=row+":"+featureVector.get(row, 0)+" ";
+			}
 		}
 
 		return status;

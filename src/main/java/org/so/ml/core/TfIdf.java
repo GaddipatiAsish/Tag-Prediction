@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.so.ml.PredictTags.DBAccess;
 
+import com.google.gson.JsonObject;
+
 import weka.core.matrix.Matrix;
 
 public class TfIdf {
@@ -23,6 +25,30 @@ public class TfIdf {
 	 */
 	public TfIdf(List<String> featureWords) {
 		this.featureWords = featureWords;
+	}
+
+	void pushToDb(Matrix tfIdfVector,List<String> qTags) {
+		/* Create a Json Document for Sparse Feature Vector */
+		JsonObject jsonSparse = new JsonObject();
+		/* Create a Json Document for Full Feature Vector */
+		JsonObject jsonFull = new JsonObject();
+
+		String featureVectorFull = new String();
+		String featureVectorSparse = new String();
+
+		/* Generate the spare and full feature strings */
+		for (int row = 0; row < tfIdfVector.getRowDimension(); row++) {
+			if (tfIdfVector.get(row, 0) != 0) {
+				featureVectorSparse += row + ":" + tfIdfVector.get(row, 0)
+						+ " ";
+			}
+			featureVectorFull += row + ":" + tfIdfVector.get(row, 0) + " ";
+		}
+		
+		/*compose the Json Documents*/
+		jsonFull.addProperty("type", "featureVectorFull");
+		jsonSparse.addProperty("type", "featureVectorSparse");
+		
 	}
 
 	/**
