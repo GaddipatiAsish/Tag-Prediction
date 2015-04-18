@@ -18,12 +18,12 @@ public class WebsiteScraper {
 	/* List of code fragments in the question */
 	protected List<String> qCodeSegments = new ArrayList<String>();
 	/* List of Tokens of the Question Code Segments */
-	List<String> qCodeTokens = new ArrayList<String>();
+	protected List<String> qCodeTokens = new ArrayList<String>();
 
 	/* Description of the question */
 	protected String qDescription = new String();
 	/* List of Tokens of the Question Description */
-	List<String> qDescriptionTokens = new ArrayList<String>();
+	protected List<String> qDescriptionTokens = new ArrayList<String>();
 
 	/**
 	 * WebsiteScraper method takes the document of website as input and parses
