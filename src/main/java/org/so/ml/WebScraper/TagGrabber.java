@@ -11,16 +11,15 @@ import com.jaunt.ResponseException;
 import com.jaunt.UserAgent;
 
 /**
-<<<<<<< HEAD
  * TagGrabber class fetches the tags from the stackOverflow website and writes
  * them to a file. All the questions related to this tags are downloaded and
  * used for training, validation and testing. This is the start point of the
  * Project.
  *
-=======
+
  * Gets tags from the webpage and saves to a file
- * @author chinmaya
->>>>>>> eb36a73d50563b8fe29868fd8a2f049631cd1ffd
+
+
  */
 public class TagGrabber {
 
@@ -29,14 +28,6 @@ public class TagGrabber {
 
 		// Get the page
 		UserAgent agent = new UserAgent();
-<<<<<<< HEAD
-		agent.visit("http://stackoverflow.com/tags");
-		com.jaunt.Document webpage = agent.doc;
-		// get the tag list
-		WebsiteScraper ws = new WebsiteScraper();
-		List<String> tagList = ws.getAllTags(webpage);
-
-=======
 		String url = "http://stackoverflow.com/tags?page=";
 		
 		// Get top N tags
@@ -51,7 +42,6 @@ public class TagGrabber {
 			tagList.addAll(ws.getAllTags(webpage));
 		}
 		
->>>>>>> eb36a73d50563b8fe29868fd8a2f049631cd1ffd
 		// write to file
 		System.out.println("TagList File Generated");
 		writeTagsToFile(tagList);
