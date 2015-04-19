@@ -1,6 +1,3 @@
-/**
- * TfIdf class computes the Tf-Idf vector given the features(Tokens) of a question(Description and Code)
- */
 package org.so.ml.core;
 
 import java.util.ArrayList;
@@ -10,12 +7,19 @@ import java.util.StringTokenizer;
 
 import weka.core.matrix.Matrix;
 
+/**
+ * TfIdf class computes the Tf-Idf vector given the features(Tokens) of a
+ * question(Description and Code)
+ * 
+ * @author AsishKumar
+ *
+ */
 public class TfIdfVector {
 	/* list of words that are considered to be in feature set. */
 	List<String> featureWords = new ArrayList<String>();
 	/* DBAccess Object */
 	DBAccess dbAccess;
-	
+
 	/**
 	 * TfIdf constructor gets the list of words that are considered to be in
 	 * feature set
@@ -42,7 +46,7 @@ public class TfIdfVector {
 	Matrix compute(String question) {
 
 		Matrix tfIdfVector = new Matrix(featureWords.size(), 1, 0);
-		
+
 		/* Break the String into Tokens */
 		List<String> qFeatures = new ArrayList<String>();
 		StringTokenizer tokenizor = new StringTokenizer(question, " ");

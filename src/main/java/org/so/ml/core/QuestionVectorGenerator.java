@@ -11,17 +11,17 @@ import com.google.gson.JsonObject;
 import weka.core.matrix.Matrix;
 
 /**
- * FeatureVectorGenerator generates the feature vectors(Tf-Idf Style) of all
+ * QuestionVectorGenerator generates the feature vectors(Tf-Idf Style) of all
  * questions(Text Style) that present in database and push them back to database
  * 
  * @author AsishKumar
  *
  */
 public class QuestionVectorGenerator {
-	
+
 	// DB Access
 	static DBAccess dbAccess;
-	
+
 	/**
 	 * readFeatureWords method reads the feature words that are considered for
 	 * feature vector from the file
@@ -40,15 +40,18 @@ public class QuestionVectorGenerator {
 		breader.close();
 		return featureWords;
 	}
-	
+
 	/**
+	 * writeToDb method writes the generated tf-idf vector of a question to
+	 * database. It writes the tf-Idf vector in in sparse form as well as full
+	 * vector
 	 * 
 	 * @param tfIdfVector
 	 * @param qTags
 	 * @return
 	 */
 	static boolean writeToDb(Matrix tfIdfVector, String[] qTags) {
-		
+
 		/* Create a Json Document for Full Feature Vector */
 		JsonObject jsonO = new JsonObject();
 		jsonO.addProperty("type", "feature_vector");
@@ -59,9 +62,11 @@ public class QuestionVectorGenerator {
 		/* Generate the spare and full feature strings */
 		for (int row = 0; row < tfIdfVector.getRowDimension(); row++) {
 			if (tfIdfVector.get(row, 0) != 0) {
-				featureVectorSparse += (row+1) + ":" + tfIdfVector.get(row, 0) + " ";
+				featureVectorSparse += (row + 1) + ":"
+						+ tfIdfVector.get(row, 0) + " ";
 			}
-			featureVectorFull += (row+1) + ":" + tfIdfVector.get(row, 0) + " ";
+			featureVectorFull += (row + 1) + ":" + tfIdfVector.get(row, 0)
+					+ " ";
 		}
 
 		/* compose the Json Documents */
@@ -88,21 +93,21 @@ public class QuestionVectorGenerator {
 		/* Connect to Database */
 		dbAccess = new DBAccess();
 		dbAccess.connect("couchdb.properties");
-		
+
 		/* Run the View */
 		dbAccess.runView("all_docs/all_questions", 2);
-		
-		/* read the feature words considered for feature vector from the file*/
+
+		/* read the feature words considered for feature vector from the file */
 		List<String> featureWords = readFeatureWords();
-		
+
 		/* loop through the results */
 		TfIdfVector tfidf = new TfIdfVector(featureWords);
 		for (int doc = 0; doc < dbAccess.noOfRowsInView; doc++) {
-			/*Get the Question and the Corresponding Tags*/
+			/* Get the Question and the Corresponding Tags */
 			String question = (String) dbAccess.viewResultGetKey(doc, 2);
 			String[] qTags = (String[]) dbAccess.viewResultGetValue(doc, 2);
-			
-			/*Get the tf-Idf feature vector of given question*/
+
+			/* Get the tf-Idf feature vector of given question */
 			Matrix tfidfVector = tfidf.compute(question);
 			writeToDb(tfidfVector, qTags);
 		}

@@ -9,10 +9,18 @@ import com.jaunt.NotFound;
 import com.jaunt.ResponseException;
 import com.jaunt.UserAgent;
 
+/**
+ * TagGrabber class fetches the tags from the stackOverflow website and writes
+ * them to a file. All the questions related to this tags are downloaded and
+ * used for training, validation and testing. This is the start point of the
+ * Project.
+ *
+ */
 public class TagGrabber {
 
-	public static void main(String[] args) throws ResponseException, NotFound, IOException {
-		
+	public static void main(String[] args) throws ResponseException, NotFound,
+			IOException {
+
 		// Get the page
 		UserAgent agent = new UserAgent();
 		agent.visit("http://stackoverflow.com/tags");
@@ -20,16 +28,18 @@ public class TagGrabber {
 		// get the tag list
 		WebsiteScraper ws = new WebsiteScraper();
 		List<String> tagList = ws.getAllTags(webpage);
-		
+
 		// write to file
 		writeTagsToFile(tagList);
 	}
-	
-	private static void writeTagsToFile(List<String> tagList) throws IOException {
+
+	private static void writeTagsToFile(List<String> tagList)
+			throws IOException {
 		// write to file
-		BufferedWriter bw = new BufferedWriter(new FileWriter("./data/TopTags.result"));
-		for(int t=0, max=tagList.size(); t<max; t++) {
-			bw.write(tagList.get(t)+"\n");
+		BufferedWriter bw = new BufferedWriter(new FileWriter(
+				"./data/TopTags.result"));
+		for (int t = 0, max = tagList.size(); t < max; t++) {
+			bw.write(tagList.get(t).toLowerCase() + "\n");
 		}
 		// close
 		bw.close();

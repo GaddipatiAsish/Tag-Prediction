@@ -36,12 +36,12 @@ public class WebsiteScraper {
 	protected String qHeader;
 
 	/**
-	 * Website scrapper simple constructor.
-	 * used for Tag grabbing (like top 100 tags etc)
+	 * Website scrapper simple constructor. used for Tag grabbing (like top 100
+	 * tags etc)
 	 */
 	public WebsiteScraper() {
 	}
-	
+
 	/**
 	 * WebsiteScraper method takes the document of website as input and parses
 	 * it into question, code and tags
@@ -54,7 +54,7 @@ public class WebsiteScraper {
 		/* Get the Question in question-header element */
 		Element qHeaderElement = website.findFirst("<div id=question-header>");
 		qHeader = qHeaderElement.findFirst("<a>").getText();
-		System.out.println("Question Header : "+ qHeader);
+		System.out.println("Question Header : " + qHeader);
 		/* get the postcell tag where the question resides. */
 		Elements postcell = website.findEvery("<td class=postcell");
 		/* traverse through the postcell tags to get the content of the Question */
@@ -73,7 +73,7 @@ public class WebsiteScraper {
 				Elements tags = keyword.findEvery("<a>");
 				Iterator<Element> tagIterator = tags.iterator();
 				while (tagIterator.hasNext()) {
-					qTags.add(tagIterator.next().getText().toString());
+					qTags.add(tagIterator.next().getText().toString().toLowerCase());
 				}
 			}
 		}
@@ -116,9 +116,9 @@ public class WebsiteScraper {
 	 * @param qtext
 	 */
 	void qDescriptionTokenizer(String qDescription, List<String> stopWordsList) {
-		/*add the question to question description*/
-		qDescription+=qHeader;
-		
+		/* add the question to question description */
+		qDescription += qHeader;
+
 		/* replace the special characters with a space */
 		qDescription = qDescription.replaceAll("[^a-zA-Z0-9]", " ");
 		/* tokenize and add tokens to list tokens */
@@ -127,7 +127,7 @@ public class WebsiteScraper {
 			String tok = tokenizer.nextToken();
 			String currentToken = tok.trim();
 			if (currentToken.length() > 1) {
-				qDescriptionTokens.add(currentToken);
+				qDescriptionTokens.add(currentToken.toLowerCase());
 			}
 		}
 		/* remove the stop words */
@@ -154,16 +154,17 @@ public class WebsiteScraper {
 				String tok = tokenizer.nextToken();
 				String currentToken = tok.trim();
 				if (currentToken.length() > 1) {
-					qCodeTokens.add(currentToken);
+					qCodeTokens.add(currentToken.toLowerCase());
 				}
 			}
 		}
 		/* remove the stop words */
 		qCodeTokens.removeAll(stopWordsList);
 	}
-	
+
 	/**
-	 * Get All the tags from the given page
+	 * Get All the tags from a given stackoverflow.com page
+	 * 
 	 * @param webpage
 	 * @return List of strings (i.e tags)
 	 * @throws NotFound
@@ -176,7 +177,7 @@ public class WebsiteScraper {
 		Element tagsTable = tagsList.findFirst("<table id=\"tags-browser\">");
 		Elements tagCell = tagsTable.findEvery("<td class=\"tag-cell\">");
 		Iterator<Element> tagIterator = tagCell.iterator();
-		while(tagIterator.hasNext()) {
+		while (tagIterator.hasNext()) {
 			String tag = tagIterator.next().findFirst("<a>").getText();
 			list.add(tag);
 		}
