@@ -44,10 +44,16 @@ public class TagVectorGenerator {
 	private static String getTagQuestions(String tag) {
 		// Run database view for this tag
 		db.runView("all_docs/tag_and_question", 0, tag);
-		long max = db.noOfRowsInView;
+		
+		// Get No of questions for each Tag
+		DBAccess tempDB = new DBAccess();
+		tempDB.connect("couchdb.properties");
+		tempDB.runViewAndReduce("all_docs/t_and_q_count", 0, tag);
+		int totalQs = Integer.parseInt((String) tempDB.viewResultGetValue(0, 0));
+		
 		String allQuestions = "";
 		// Concatenate all the Questions
-		for(int q=0; q<max; ++q) {
+		for(int q=0; q<totalQs; ++q) {
 			allQuestions += (String) db.viewResultGetValue(q, 0) + " ";
 		}
 		
@@ -89,13 +95,12 @@ public class TagVectorGenerator {
 			db.connect("couchdb.properties");
 			
 			// TfIdf class
-			TfIdfVector tfIdf = new TfIdfVector(featureWords);
+			TfIdfTagVector tfIdf = new TfIdfTagVector(featureWords);
 			
 			// For each tag get the set of questions and compute the vector
 			for(int t=0, max=tagList.size(); t<max; t++) {
 				String tag = tagList.get(t);
 				String questions = getTagQuestions(tag);
-				// TODO: yet to compute Idf values for the tag's total questions
 				// TODO: Code part of feature words is yet to be added
 				Matrix featureVector = tfIdf.compute(questions);
 				writeToDB(featureVector, tag);

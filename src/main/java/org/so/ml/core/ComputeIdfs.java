@@ -28,7 +28,7 @@ public class ComputeIdfs {
 		List<String> wordList = new ArrayList<String>();
 		String word = br.readLine();
 		while(word != null) {
-			wordList.add(word);
+			wordList.add(word.trim());
 			word = br.readLine();
 		}
 
