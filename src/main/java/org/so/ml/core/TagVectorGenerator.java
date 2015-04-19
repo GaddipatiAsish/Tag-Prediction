@@ -87,7 +87,7 @@ public class TagVectorGenerator {
 	public static void main(String[] args) {
 		try {
 			// Get all the tags and feature words
-			List<String> tagList = getWords("./data/Tags.result");
+			List<String> tagList = getWords("./data/AggregateTags.result");
 			List<String> featureWords = getWords("./data/FeatureWords.result");
 			
 			// Instantiate DB

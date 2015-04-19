@@ -18,6 +18,7 @@ public class TfIdfTagVector {
 	public TfIdfTagVector(List<String> featureWords) {
 		this.featureWords = featureWords;
 		db = new DBAccess();
+		db.connect("couchdb.properties");
 	}
 
 	public Matrix compute(String document) {
