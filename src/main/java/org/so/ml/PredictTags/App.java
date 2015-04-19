@@ -1,5 +1,7 @@
 package org.so.ml.PredictTags;
-import org.so.ml.core.DBAccess;
+import java.io.IOException;
+
+import org.so.ml.core.*;
 
 /**
  * Hello world!
@@ -7,7 +9,7 @@ import org.so.ml.core.DBAccess;
  */
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) throws IOException
     {
     	// communicate and write to couchdb 
 //		CouchDbClient dbClient = new CouchDbClient("couchdb.properties");
@@ -26,17 +28,24 @@ public class App
 //		System.out.println(upJson.get("count"));
 //		upJson.addProperty("count", upJson.get("count").getAsInt()+1);
 //		dbClient.save(upJson);
-    	
-    	// Get DB class
+    	// --------------
+//    	// Get DB class
     	DBAccess db = new DBAccess();
     	db.connect("couchdb.properties");
+//    	
+//    	// view
+//    	db.runView("idfs/get_idf", 0, "sub");
+//    	
+//    	// get result
+//    	System.out.println("No of rows: "+db.noOfRowsInView);
+//    	System.out.println(db.viewResultGetValue(0, 0));
+////    	System.out.println(db.viewResultGetValue(1, 0));
+    	// ----------------
     	
-    	// view
-    	db.runView("idfs/get_idf", 0, "sub");
-    	
-    	// get result
-    	System.out.println("No of rows: "+db.noOfRowsInView);
-    	System.out.println(db.viewResultGetValue(0, 0));
-//    	System.out.println(db.viewResultGetValue(1, 0));
+    	db.runView("all_docs/all_questions", 2);
+    	for(int q=0, max=(int)db.noOfRowsInView; q<max; q++) {
+    		System.out.println(CosineSimilarity.compute((String) db.viewResultGetKey(q, 2), "python"));
+    	}
+//    	String document = "As title says call function class another program Class pyGenerator pyMood set default value happy need change based random integer roll test mood displayed isn always displayed happy";
     }
 }
