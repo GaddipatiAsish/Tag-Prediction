@@ -1,7 +1,6 @@
 package org.so.ml.WebScraper;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -178,22 +177,20 @@ public class GetQuestions {
 						qJson.addProperty("tag" + t, qTags.get(t - 1));
 					}
 
-					// Add Question
-					List<String> qDescription = webScraper.qDescriptionTokens;
-					String description = "";
-					for (int d = 0; d < qDescription.size(); ++d) {
-						description += qDescription.get(d) + " ";
-					}
-					qJson.addProperty("description", description);
+					/*Add Question & question description & code to qDescription variable */
 
-					// Add Code Block with @suffixed and prefixed Ex: @import@
+					List<String> qContent = webScraper.qDescriptionTokens;
+					String questionContent = "";
+					for (int d = 0; d < qContent.size(); ++d) {
+						questionContent += qContent.get(d) + " ";
+					}
+					/* Add Code Block with @suffixed and prefixed Ex: @import@ */
 					List<String> qCode = webScraper.qCodeTokens;
-					String code = "";
 					for (int d = 0; d < qCode.size(); ++d) {
-						code += "@"+qCode.get(d) + "@ ";
+						questionContent += "@" + qCode.get(d) + "@ ";
 					}
-					qJson.addProperty("code", code);
 
+					qJson.addProperty("qContent", questionContent);
 					// Add this to DB
 					boolean res = getQs.pushToDB(qJson);
 					if (!res)
