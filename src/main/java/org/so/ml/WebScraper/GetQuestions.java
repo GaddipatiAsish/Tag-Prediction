@@ -189,7 +189,7 @@ public class GetQuestions {
 					for (int d = 0; d < qCode.size(); ++d) {
 						questionContent += "@" + qCode.get(d) + "@ ";
 					}
-
+					// TODO: may have to update all_questions view
 					qJson.addProperty("qContent", questionContent);
 					// Add this to DB
 					boolean res = getQs.pushToDB(qJson);

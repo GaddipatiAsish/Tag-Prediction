@@ -28,7 +28,7 @@ public class TfIdfVector {
 	 */
 	public TfIdfVector(List<String> featureWords) {
 		this.featureWords = featureWords;
-		// For DB
+		/* For DB connection */
 		dbAccess = new DBAccess();
 		dbAccess.connect("couchdb.properties");
 	}
@@ -59,13 +59,16 @@ public class TfIdfVector {
 		for (int wordCount = 0, max = featureWords.size(); wordCount < max; wordCount++) {
 			/* Get the term */
 			String term = featureWords.get(wordCount);
+			
 			/* Get the term frequency */
 			int freq = Collections.frequency(qFeatures, term);
 			double tf = freq > 0 ? 1 + Math.log(freq) : 0;
+			
 			/* Get the IDF of the term from the db */
 			dbAccess.runView("idfs/get_idf", 0, term);
 			String idfValue = ((String) dbAccess.viewResultGetValue(0, 0));
 			double idf = Double.parseDouble(idfValue);
+			
 			/* push the terms' tf-idf value to tf-idf Matrix */
 			tfIdfVector.set(wordCount, 0, tf * idf);
 		}
