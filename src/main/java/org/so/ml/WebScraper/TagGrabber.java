@@ -28,13 +28,14 @@ public class TagGrabber {
 
 		// Get the page
 		UserAgent agent = new UserAgent();
-		String url = "http://stackoverflow.com/tags?page=";
 		
 		// Get top N tags
 		List<String> tagList = new ArrayList<String>();
-		int nTopTags = 100;
-		for(int t=0; t<nTopTags/33; ++t) {	// 36 tags per page but take 33 to get nearly 100 tags
+		int nTopTags = 152;
+		for(int t=1; t<=nTopTags/33; ++t) {	// 36 tags per page but take 33 to get nearly 100 tags
+			String url = "http://stackoverflow.com/tags?page=";
 			url += t + "&tab=popular";
+			System.out.println("url: "+ url);
 			agent.visit(url);
 			com.jaunt.Document webpage = agent.doc;
 			// get the tag list

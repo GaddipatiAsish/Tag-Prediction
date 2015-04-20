@@ -54,7 +54,7 @@ public class WebsiteScraper {
 		/* Get the Question in question-header element */
 		Element qHeaderElement = website.findFirst("<div id=question-header>");
 		qHeader = qHeaderElement.findFirst("<a>").getText();
-		System.out.println("Question Header : " + qHeader);
+//		System.out.println("Question Header : " + qHeader);
 		/* get the postcell tag where the question resides. */
 		Elements postcell = website.findEvery("<td class=postcell");
 		/* traverse through the postcell tags to get the content of the Question */

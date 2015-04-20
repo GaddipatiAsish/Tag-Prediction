@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.Response;
@@ -108,18 +109,16 @@ public class GetQuestions {
 	 * @throws ResponseException
 	 * @throws NotFound
 	 * @throws IOException
+	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args) throws ResponseException, NotFound,
-			IOException {
+			IOException, InterruptedException {
 
 		// Create GetQuestions Object
-		GetQuestions getQs = new GetQuestions(30);
+		GetQuestions getQs = new GetQuestions(210);		// Grabbing 210 questions per Tag (tag list in TopTags.result)
 
 		// List of tags to get questions from
 		List<String> tagList = getQs.getTags();
-
-		// Construct the URL
-		String urlMain = "http://stackoverflow.com/questions/tagged/";
 
 		// create view agent
 		UserAgent agent = new UserAgent();
@@ -131,13 +130,22 @@ public class GetQuestions {
 		// Iterate over the tags to get the pages
 		Iterator<String> tagIterator = tagList.iterator();
 		while (tagIterator.hasNext()) {
+			// Construct the URL
+			String url = "http://stackoverflow.com/questions/tagged/";
 			// Append the URL
-			urlMain += tagIterator.next();
-
+			url += tagIterator.next();
+			System.out.println("For Tag URL: " + url);
+			
 			// Get Questions
 			for (int page = 1; page <= getQs.totalQsPerTag / 15; ++page) {
+				// Sleep for some time so that website wont block the program
+				if(page % 4 == 0)
+					TimeUnit.SECONDS.sleep(11);
+				// URL
+				String urlMain = url.toString();
 				// Append the URL
 				urlMain += "?page=" + page + "&sort=newest&pagesize=15";
+				System.out.println("Visiting Page: " + urlMain);
 				// visit the webpage
 				agent.visit(urlMain);
 				// webpage document
