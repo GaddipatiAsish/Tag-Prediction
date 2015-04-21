@@ -138,9 +138,7 @@ public class GetQuestions {
 			
 			// Get Questions
 			for (int page = 1; page <= getQs.totalQsPerTag / 15; ++page) {
-				// Sleep for some time so that website wont block the program
-				if(page % 4 == 0)
-					TimeUnit.SECONDS.sleep(11);
+				
 				// URL
 				String urlMain = url.toString();
 				// Append the URL
@@ -157,6 +155,9 @@ public class GetQuestions {
 						.findEvery("<div class=question-summary>");
 				Iterator<Element> questionsIterator = questions.iterator();
 				while (questionsIterator.hasNext()) {
+					// Sleep for some time so that website wont block the program
+					TimeUnit.SECONDS.sleep(2);
+					
 					// Get the question block
 					Element question = questionsIterator.next();
 					// question linkS
