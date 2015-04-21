@@ -49,8 +49,8 @@ public class WebsiteScraper {
 	 * @param website
 	 * @throws NotFound
 	 */
-	public WebsiteScraper(Document website, List<String> stopWordsList)
-			throws NotFound {
+	public WebsiteScraper(Document website, List<String> stopWordsList) {
+		try{
 		/* Get the Question in question-header element */
 		Element qHeaderElement = website.findFirst("<div id=question-header>");
 		qHeader = qHeaderElement.findFirst("<a>").getText();
@@ -76,6 +76,9 @@ public class WebsiteScraper {
 					qTags.add(tagIterator.next().getText().toString().toLowerCase());
 				}
 			}
+		}
+		}catch(NotFound e){
+			e.printStackTrace();
 		}
 	}
 

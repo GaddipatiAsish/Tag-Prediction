@@ -156,7 +156,7 @@ public class GetQuestions {
 				Iterator<Element> questionsIterator = questions.iterator();
 				while (questionsIterator.hasNext()) {
 					// Sleep for some time so that website wont block the program
-					TimeUnit.SECONDS.sleep(2);
+					TimeUnit.SECONDS.sleep(1);
 					
 					// Get the question block
 					Element question = questionsIterator.next();
