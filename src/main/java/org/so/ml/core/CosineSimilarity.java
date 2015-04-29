@@ -31,6 +31,8 @@ public class CosineSimilarity {
 	 */
 	public static double compute(String document, String tag) throws IOException {
 		// Get document tfidf vector
+		// TODO: Move this feature list generation independent of compute. so that 
+		// it makes faster computation in we give a sequence of docs.
 		List<String> featureList = makeFileToList("./data/FeatureWords.result");
 		noOfFeatures = featureList.size();
 		TfIdfVector tfidf = new TfIdfVector(featureList);

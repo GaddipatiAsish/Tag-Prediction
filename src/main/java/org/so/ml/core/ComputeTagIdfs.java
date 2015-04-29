@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import com.google.gson.JsonObject;
@@ -17,6 +18,8 @@ public class ComputeTagIdfs {
 	// Get lists - aggregate tag list and feature words
 	private static List<String> tagList;
 	private static List<String> featureWordList;
+	// Map tag vs TotalQ's
+	private static Map<String, String> tagAndAllQs;
 	
 	/**
 	 * Make file [which has single entries in each row] to a list and return 
@@ -64,6 +67,7 @@ public class ComputeTagIdfs {
 	 * @return string which is all questions
 	 */
 	private static String getTagQuestions(String tag) {
+
 		// Run database view for this tag
 		db.runView("all_docs/tag_and_question", 0, tag);
 		
@@ -78,6 +82,9 @@ public class ComputeTagIdfs {
 		for(int q=0; q<totalQs; ++q) {
 			allQuestions += (String) db.viewResultGetValue(q, 0) + " ";
 		}
+		
+		// Map the tag & Q's
+		tagAndAllQs.put(tag, allQuestions);
 		
 		// return all questions
 		return allQuestions;

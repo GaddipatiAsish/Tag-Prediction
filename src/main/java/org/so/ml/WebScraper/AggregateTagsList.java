@@ -66,8 +66,11 @@ public class AggregateTagsList {
 		Iterator<Map.Entry<String, Integer>> iter = hashMap.entrySet().iterator();
 		BufferedWriter bw = new BufferedWriter(new FileWriter("./data/AggregateTags.result"));
 		while(iter.hasNext()) {
-			bw.write(iter.next().getKey() + "\n");		// change file to AggregateTags.result
-//			bw.write(iter.next().toString() + "\n");	// change file to AggregateTagsWithValues.result
+			Map.Entry<String, Integer> entry = iter.next();
+			if(entry.getValue() > 20) {
+				bw.write(entry.getKey() + "\n");		// change file to AggregateTags.result
+//				bw.write(entry.toString() + "\n");	// change file to AggregateTagsWithValues.result
+			}
 		}
 		// close buffer
 		bw.close();

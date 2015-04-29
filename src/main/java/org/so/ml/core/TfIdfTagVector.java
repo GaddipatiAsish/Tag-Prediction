@@ -48,4 +48,5 @@ public class TfIdfTagVector {
 		// return matrix
 		return mFeatureVector;
 	}
+	
 }

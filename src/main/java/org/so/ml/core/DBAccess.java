@@ -135,7 +135,7 @@ public class DBAccess {
 			}
 		}
 		catch(CouchDbException excep) {
-			System.out.println("Exception while running a view & assigning to viewResult:- ");
+			System.out.println("Exception while running a view & assigning to viewResult:- " + excep);
 			System.out.println(viewName.toString());
 			return false;
 		}
@@ -175,7 +175,7 @@ public class DBAccess {
 			}
 		}
 		catch(CouchDbException excep) {
-			System.out.println("Exception while running a view & assigning to viewResult:- ");
+			System.out.println("Exception while running a view & assigning to viewResult:- " + excep);
 			System.out.println(viewName.toString());
 			return false;
 		}
