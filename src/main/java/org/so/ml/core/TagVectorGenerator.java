@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import weka.core.matrix.Matrix;
 
@@ -16,7 +14,6 @@ public class TagVectorGenerator {
 
 	// DB Access
 	private static DBAccess db;
-	private static HashMap<String, HashMap<String, Integer>> tagQTokens;
 	
 	/**
 	 * Get Feature Words list from the given file
@@ -37,26 +34,6 @@ public class TagVectorGenerator {
 		// clean & return
 		br.close();
 		return wordList;
-	}
-	
-	/**
-	 * Gives the hashmap of words, count for the given paragraph.
-	 * @param paragraph
-	 * @return hashmap of words - count
-	 */
-	private static HashMap<String, Integer> getWordsFromString(String paragraph) {
-		// Give Words map
-		StringTokenizer tokenizer = new StringTokenizer(paragraph, " ");
-		HashMap<String, Integer> wordsCount = new HashMap<String, Integer>();
-		while(tokenizer.hasMoreElements()) {
-			String token = tokenizer.nextToken();
-			if(wordsCount.containsKey(token))
-				wordsCount.put(token, wordsCount.get(token)+1);
-			else
-				wordsCount.put(token, 1);
-		}
-		
-		return wordsCount;
 	}
 	
 	/**
@@ -82,11 +59,6 @@ public class TagVectorGenerator {
 		
 		// return all questions
 		return allQuestions;
-	}
-	
-	private static void fillTagQTokens(String tag) {
-		// Get the aggregate questions for the tag
-		tagQTokens.put(tag, getWordsFromString(getTagQuestions(tag)));
 	}
 	
 	/**
@@ -122,11 +94,6 @@ public class TagVectorGenerator {
 			db = new DBAccess();
 			db.connect("couchdb.properties");
 			
-			// Fill the tagQTokens i.e for each tag get word tokens from all of its questions
-			for(int t=0, max=tagList.size(); t<max; t++) {
-				
-			}
-			
 			// TfIdf class
 			TfIdfTagVector tfIdf = new TfIdfTagVector(featureWords);
 			
@@ -134,7 +101,6 @@ public class TagVectorGenerator {
 			for(int t=0, max=tagList.size(); t<max; t++) {
 				String tag = tagList.get(t);
 				String questions = getTagQuestions(tag);
-				// TODO: Code part of feature words is yet to be added
 				Matrix featureVector = tfIdf.compute(questions);
 				writeToDB(featureVector, tag);
 			}

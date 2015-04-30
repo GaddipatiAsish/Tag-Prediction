@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,11 @@ import java.util.StringTokenizer;
 
 import com.google.gson.JsonObject;
 
+/**
+ * Compute IDF values for the feature words (based on all tag's aggregate questions)
+ * @author chinmaya
+ *
+ */
 public class ComputeTagIdfs {
 
 	// DB
@@ -20,46 +26,7 @@ public class ComputeTagIdfs {
 	private static List<String> featureWordList;
 	// Map tag vs TotalQ's
 	private static Map<String, String> tagAndAllQs;
-	
-	/**
-	 * Make file [which has single entries in each row] to a list and return 
-	 * @param fileName
-	 * @return
-	 * @throws IOException
-	 */
-	private static List<String> makeFileToList(String fileName) throws IOException {
-		// Open file and populate a list of words
-		BufferedReader br = new BufferedReader(new FileReader(fileName));
-		List<String> wordList = new ArrayList<String>();
-		String word = br.readLine();
-		while(word != null) {
-			wordList.add(word.trim());
-			word = br.readLine();
-		}
-
-		// clean & return
-		br.close();
-		return wordList;
-	}
-	
-	/**
-	 * Returns true if the document has that word else false
-	 * @param document
-	 * @param word
-	 * @return boolean
-	 */
-	private static boolean docHasWord(String document, String word) {
-		// Tokenize the given string and check if the given word exists
-		StringTokenizer tokenizer = new StringTokenizer(document, " ");
-		while(tokenizer.hasMoreTokens()) {
-			String token = tokenizer.nextToken();
-			if(word.equals(token))
-				return true;
-		}
-		
-		// return
-		return false;
-	}
+	private static HashMap<String, HashMap<String, Integer>> tagQWordsMap;
 	
 	/**
 	 * Get all the questions of a particular tag in a single String
@@ -91,6 +58,26 @@ public class ComputeTagIdfs {
 	}
 	
 	/**
+	 * Gives the hashmap of words, count for the given paragraph (tag's aggregate question here).
+	 * @param paragraph
+	 * @return hashmap of words - count
+	 */
+	private static HashMap<String, Integer> getWordsHashMap(String paragraph) {
+		// Give Words map
+		StringTokenizer tokenizer = new StringTokenizer(paragraph, " ");
+		HashMap<String, Integer> wordsHashMap = new HashMap<String, Integer>();
+		while(tokenizer.hasMoreElements()) {
+			String token = tokenizer.nextToken();
+			if(wordsHashMap.containsKey(token))
+				wordsHashMap.put(token, wordsHashMap.get(token)+1);
+			else
+				wordsHashMap.put(token, 1);
+		}
+		
+		return wordsHashMap;
+	}
+	
+	/**
 	 * Compute Idf value for the featureWord on Tags questions
 	 * @param featureWord
 	 * @return idf value
@@ -100,26 +87,15 @@ public class ComputeTagIdfs {
 		int N = tagList.size();
 		// how many docs have the given feature word
 		double n = 0; // initialize
-		// Check if each of the tag questions have the featureWord
+		// Count no of tag documents having this word
 		Iterator<String> iter = tagList.iterator();
 		while(iter.hasNext()) {
-			String tag = iter.next();
-			String questions = getTagQuestions(tag);
-			if(docHasWord(questions, featureWord))
-				++n;
+			String key = iter.next();
+			if(tagQWordsMap.get(key).containsKey(featureWord))
+				n++;
 		}
 		// return idf value
 		return Math.log(N/n);
-	}
-	
-	private static boolean writeToDB(String featureWord, double idfValue) {
-		// Json
-		JsonObject jsonO = new JsonObject();
-		jsonO.addProperty("type", "tag_idf");
-		jsonO.addProperty("word", featureWord);
-		jsonO.addProperty("value", idfValue);
-		// add to DB
-		return db.save(jsonO);
 	}
 	
 	/**
@@ -136,14 +112,58 @@ public class ComputeTagIdfs {
 		tagList = makeFileToList("./data/AggregateTags.result");
 		featureWordList  = makeFileToList("./data/FeatureWords.result");
 
+		// Get aggregate question word map for each tag
+		Iterator<String> tagIter = tagList.iterator();
+		while(tagIter.hasNext()) {
+			String tag = tagIter.next();
+			tagQWordsMap.put(tag, getWordsHashMap(getTagQuestions(tag)));
+		}
+		
 		// For each feature word compute Idf value and insert to DB
 		Iterator<String> iter = featureWordList.iterator();
 		while(iter.hasNext()) {
 			String featureWord  = iter.next();
 			double idfValue = computeIdf(featureWord);
 			// Write to DB
-			 writeToDB(featureWord, idfValue);
+			writeToDB(featureWord, idfValue);
 //			System.out.println(idfValue);
 		}		
+	}
+	
+	/**
+	 * Write to the tag_idfs to the database
+	 * @param featureWord
+	 * @param idfValue
+	 * @return
+	 */
+	private static boolean writeToDB(String featureWord, double idfValue) {
+		// Json
+		JsonObject jsonO = new JsonObject();
+		jsonO.addProperty("type", "tag_idf");
+		jsonO.addProperty("word", featureWord);
+		jsonO.addProperty("value", idfValue);
+		// add to DB
+		return db.save(jsonO);
+	}
+	
+	/**
+	 * Make file [which has single entries in each row] to a list and return 
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
+	private static List<String> makeFileToList(String fileName) throws IOException {
+		// Open file and populate a list of words
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		List<String> wordList = new ArrayList<String>();
+		String word = br.readLine();
+		while(word != null) {
+			wordList.add(word.trim());
+			word = br.readLine();
+		}
+
+		// clean & return
+		br.close();
+		return wordList;
 	}
 }
