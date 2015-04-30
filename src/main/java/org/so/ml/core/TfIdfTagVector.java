@@ -12,7 +12,6 @@ import weka.core.matrix.Matrix;
 /**
  * Computes tfidf vector for given document (using compute method)
  * @author chinmaya
- *
  */
 public class TfIdfTagVector {
 

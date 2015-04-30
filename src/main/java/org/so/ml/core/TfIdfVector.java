@@ -2,6 +2,8 @@ package org.so.ml.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -19,6 +21,8 @@ public class TfIdfVector {
 	List<String> featureWords = new ArrayList<String>();
 	/* DBAccess Object */
 	DBAccess dbAccess;
+	// IDF Value List
+	HashMap<String, Double> idfValueMap;
 
 	/**
 	 * TfIdf constructor gets the list of words that are considered to be in
@@ -31,6 +35,33 @@ public class TfIdfVector {
 		/* For DB connection */
 		dbAccess = new DBAccess();
 		dbAccess.connect("couchdb.properties");
+		// IDF values list
+		idfValueMap = new HashMap<String, Double>();
+	}
+	
+	/**
+	 * Fills the idf value map - word:idf values
+	 * @param isForClusters - true: for clusters (get_tag_idfs) else for not clusters (get_idfs)
+	 */
+	public void fillIdfValueMap(boolean isForClusters) {
+		Iterator<String> featureIter = featureWords.iterator();
+		if(isForClusters) {
+			while(featureIter.hasNext()) {
+				String word = featureIter.next();
+				dbAccess.runView("idfs/get_tag_idfs", 0, word);
+				Double idfValue = Double.parseDouble(((String) dbAccess.viewResultGetValue(0, 0)));
+				idfValueMap.put(word, idfValue);
+			}
+		}
+		else {
+			while(featureIter.hasNext()) {
+				String word = featureIter.next();
+				dbAccess.runView("idfs/get_idfs", 0, word);
+				Double idfValue = Double.parseDouble(((String) dbAccess.viewResultGetValue(0, 0)));
+				idfValueMap.put(word, idfValue);
+			}
+		}
+		
 	}
 
 	/**
@@ -65,9 +96,7 @@ public class TfIdfVector {
 			double tf = freq > 0 ? 1 + Math.log(freq) : 0;
 			
 			/* Get the IDF of the term from the db */
-			dbAccess.runView("idfs/get_idf", 0, term);
-			String idfValue = ((String) dbAccess.viewResultGetValue(0, 0));
-			double idf = Double.parseDouble(idfValue);
+			Double idf = idfValueMap.get(term);
 			
 			/* push the terms' tf-idf value to tf-idf Matrix */
 			tfIdfVector.set(wordCount, 0, tf * idf);
