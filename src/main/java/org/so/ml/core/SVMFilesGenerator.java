@@ -25,7 +25,7 @@ public class SVMFilesGenerator {
 	 */
 	static List<String> getAllTags() throws Exception {
 		List<String> allTags = new ArrayList<String>();
-		String file = "./data/TopTags.result";
+		String file = "./data/AggregateTags.result";
 		BufferedReader breader = new BufferedReader(new FileReader(file));
 		String tag;
 		while ((tag = breader.readLine()) != null) {
@@ -45,7 +45,7 @@ public class SVMFilesGenerator {
 		/* loop through the all considered tags for the Project */
 		for (int tag = 0, tagMax = allTags.size(); tag < tagMax; tag++) {
 
-			/* Writer Object for SVM Tag File Geneation */
+			/* Writer Object for SVM Tag File Generation */
 			String fileName = "./data/svm/" + allTags.get(tag) + ".train";
 			BufferedWriter bwriter = new BufferedWriter(new FileWriter(
 					new File(fileName)));

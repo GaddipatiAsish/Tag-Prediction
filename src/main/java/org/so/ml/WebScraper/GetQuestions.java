@@ -24,8 +24,6 @@ import com.jaunt.UserAgent;
  * database by removing the stop words.
  * 
  * Second Step of the Project
- * 
- *
  */
 public class GetQuestions {
 
@@ -94,7 +92,7 @@ public class GetQuestions {
 	 */
 	List<String> getTags() throws IOException {
 		List<String> tagList = new ArrayList<String>();
-		String fileName = "./data/TopTags.result";
+		String fileName = "./data/MasterTagFile.result";
 		BufferedReader breader = new BufferedReader(new FileReader(fileName));
 		String tag;
 		while ((tag = breader.readLine()) != null) {
@@ -115,7 +113,7 @@ public class GetQuestions {
 			IOException, InterruptedException {
 
 		// Create GetQuestions Object
-		GetQuestions getQs = new GetQuestions(210);		// Grabbing 210 questions per Tag (tag list in TopTags.result)
+		GetQuestions getQs = new GetQuestions(210);		// Grabbing 210 questions per Tag (tag list in MasterTagFile.result)
 
 		// List of tags to get questions from
 		List<String> tagList = getQs.getTags();
@@ -184,7 +182,7 @@ public class GetQuestions {
 						qJson.addProperty("tag" + t, qTags.get(t - 1));
 					}
 
-					/*Add Question & question description & code to qDescription variable */
+					/*Add Question & Question description & code to qDescription variable */
 
 					List<String> qContent = webScraper.qDescriptionTokens;
 					String questionContent = "";

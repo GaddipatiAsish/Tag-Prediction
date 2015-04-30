@@ -54,7 +54,7 @@ public class WebsiteScraper {
 			/* Get the Question in question-header element */
 			Element qHeaderElement = website.findFirst("<div id=question-header>");
 			qHeader = qHeaderElement.findFirst("<a>").getText();
-			//		System.out.println("Question Header : " + qHeader);
+			//System.out.println("Question Header : " + qHeader);
 			/* get the postcell tag where the question resides. */
 			Elements postcell = website.findEvery("<td class=postcell");
 			/* traverse through the postcell tags to get the content of the Question */
@@ -62,7 +62,7 @@ public class WebsiteScraper {
 			Elements contents = div.findEvery("<div>");
 			Iterator<Element> iterator = contents.iterator();
 			while (iterator.hasNext()) {
-				/* Get the Question */
+				/* Get the Question description*/
 				Element keyword = iterator.next();
 				if (keyword.getAt("class").compareTo("post-text") == 0
 						&& keyword.getAt("itemprop").compareTo("text") == 0) {
@@ -98,7 +98,7 @@ public class WebsiteScraper {
 					.innerText());
 		}
 
-		/* Get the text in the Question */
+		/* Get the Question Description */
 		Elements textElements = question.findEvery("<p>");
 		Iterator<Element> textIterator = textElements.iterator();
 		while (textIterator.hasNext()) {
@@ -113,7 +113,7 @@ public class WebsiteScraper {
 	}
 
 	/**
-	 * qDescriptionTokenizer method tokenizes the description of the question
+	 * qDescriptionTokenizer method tokenizes the description of the question, question(header)
 	 * and removes the stop words from the tokens
 	 * 
 	 * @param qtext

@@ -12,7 +12,7 @@ import com.jaunt.UserAgent;
 
 /**
  * TagGrabber class fetches the tags from the stackOverflow website and writes
- * them to a file. All the questions related to this tags are downloaded and
+ * them to a file. All the questions related to these tags are downloaded and
  * used for training, validation and testing. This is the start point of the
  * Project.
  *
@@ -52,7 +52,7 @@ public class TagGrabber {
 			throws IOException {
 		// write to file
 		BufferedWriter bw = new BufferedWriter(new FileWriter(
-				"./data/TopTags.result"));
+				"./data/MasterTagFile.result"));
 		for (int t = 0, max = tagList.size(); t < max; t++) {
 			bw.write(tagList.get(t).toLowerCase() + "\n");
 		}

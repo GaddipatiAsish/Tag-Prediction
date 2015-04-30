@@ -12,7 +12,8 @@ import weka.core.matrix.Matrix;
 
 /**
  * QuestionVectorGenerator generates the feature vectors(Tf-Idf Style) of all
- * questions(Text Style) that present in database and push them back to database
+ * questions(Text Style) that present in database and push them back to database from which
+ * the SVM Files are generated.
  * 
  * @author AsishKumar
  *
