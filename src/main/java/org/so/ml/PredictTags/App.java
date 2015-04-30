@@ -44,7 +44,7 @@ public class App
     	
     	db.runView("all_docs/all_questions", 2);
     	for(int q=0, max=(int)db.noOfRowsInView; q<max; q++) {
-    		System.out.println(new CosineSimilarity("./data/FeatureWords.result").compute((String) db.viewResultGetKey(q, 2), "python"));
+    		System.out.println(new CosineSimilarity("./data/FeatureWords.result", "./data/AggregateTags.result").compute((String) db.viewResultGetKey(q, 2), "python"));
     	}
 //    	String document = "As title says call function class another program Class pyGenerator pyMood set default value happy need change based random integer roll test mood displayed isn always displayed happy";
     }

@@ -39,7 +39,7 @@ public class SaveQuestion {
 //		System.out.println(findObj.get("question"));
 		
 		// --------
-		View v = dbClient.view("delete/tag_idf"); // update/python -- delete/empty_qcontent
+		View v = dbClient.view("delete/tag_vector"); // update/python -- delete/empty_qcontent
 		ViewResult<String, String, JsonObject> vResult = v.queryView(String.class, String.class, JsonObject.class);
 		for(int i=0, max=(int) vResult.getTotalRows(); i<max; i++) {
 			delete(vResult.getRows().get(i).getKey(), vResult.getRows().get(i).getValue());

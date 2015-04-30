@@ -41,7 +41,7 @@ public class UnsupervisedTagPrediction {
 			// run db view and get all the question
 			db.runView("test_time/all_questions", 0);
 			// Initiate Cosine similarity
-			cs = new CosineSimilarity("./data/FeatureWords.result");
+			cs = new CosineSimilarity("./data/FeatureWords.result", "./data/AggregateTags.result");
 			
 			// for each question calculate the top 5 tags and write to DB
 			for(int q=0, max=(int)db.noOfRowsInView; q<max; q++) {
@@ -64,7 +64,6 @@ public class UnsupervisedTagPrediction {
 	 * @param idAndTrueTags
 	 */
 	private static void writeTagsToDB(String[] predTags, String[] idAndTrueTags) {
-		// TODO Don't forget to include id of doc as the first element
 		JsonObject jsonO = new JsonObject();
 		jsonO.addProperty("type", "true_vs_pred_tags");
 		jsonO.addProperty("qid", idAndTrueTags[0]);
@@ -76,7 +75,7 @@ public class UnsupervisedTagPrediction {
 				jsonO.addProperty("true_tag_"+i, trueTag);
 		}
 		for(int i=1; i<6; i++) {
-			jsonO.addProperty("pred_tag_"+i, predTags[i]);
+			jsonO.addProperty("pred_tag_"+i, predTags[i-1]);
 		}
 		
 		// write json object

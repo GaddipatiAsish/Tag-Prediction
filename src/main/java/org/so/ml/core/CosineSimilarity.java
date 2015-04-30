@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -19,22 +21,44 @@ import weka.core.matrix.Matrix;
 public class CosineSimilarity {
 
 	// DB
-	private static DBAccess db;
-	private static int noOfFeatures;
-	private static List<String> featureList;
+	private DBAccess db;
+	private int noOfFeatures;
+	private List<String> featureList;
+	private HashMap<String, Matrix> tagVectorMap;
 
 	/**
 	 * Constructor - takes feature list file
 	 * @param featureFile
 	 * @throws IOException
 	 */
-	public CosineSimilarity(String featureFile) throws IOException {
+	public CosineSimilarity(String featureFile, String tagFile) throws IOException {
 		// Get the feature List
 		featureList = makeFileToList(featureFile);
 		noOfFeatures = featureList.size();
 		// Connect to DB
 		db = new DBAccess();
 		db.connect("couchdb.properties");
+		
+		// Get tfidf vector for each tag.
+		this.getAllTagVectors(tagFile);
+	}
+	
+	/**
+	 * Fills the tagVectorMap. Tag : Its tfidf Vector Matrix
+	 * @param tagFile
+	 * @throws IOException
+	 */
+	public void getAllTagVectors(String tagFile) throws IOException {
+		// initialize hash map
+		tagVectorMap = new HashMap<String, Matrix>();
+		// get all the tags
+		List<String> tagList = makeFileToList(tagFile);
+		Iterator<String> tagIter = tagList.iterator();
+		
+		while(tagIter.hasNext()) {
+			String tag = tagIter.next();
+			tagVectorMap.put(tag, getTagVector(tag));
+		}
 	}
 
 	/**
@@ -49,7 +73,7 @@ public class CosineSimilarity {
 		TfIdfVector tfidf = new TfIdfVector(featureList);
 		Matrix vDoc = tfidf.compute(document);
 		// Get the tag's tfidf vector
-		Matrix vTag = getTagVector(tag);
+		Matrix vTag = tagVectorMap.get(tag);
 
 		// compute cosine similarity between two vectors
 		Matrix xTy = vDoc.transpose().times(vTag);
