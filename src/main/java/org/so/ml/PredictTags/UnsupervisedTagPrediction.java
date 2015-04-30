@@ -20,7 +20,6 @@ import com.google.gson.JsonObject;
  *   cosine similarity with each tag and selects the best 5 tags
  *   for the question.
  * @author chinmaya
- *
  */
 public class UnsupervisedTagPrediction {
 	
@@ -39,7 +38,7 @@ public class UnsupervisedTagPrediction {
 			db = new DBAccess();
 			db.connect("couchdb_test.properties");
 			// run db view and get all the question
-			db.runView("test_time/all_questions", 0);
+			db.runView("test_time/all_questions", 2);
 			// Initiate Cosine similarity
 			cs = new CosineSimilarity("./data/FeatureWords.result", "./data/AggregateTags.result");
 			

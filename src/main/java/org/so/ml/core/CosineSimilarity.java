@@ -24,6 +24,7 @@ public class CosineSimilarity {
 	private DBAccess db;
 	private int noOfFeatures;
 	private List<String> featureList;
+	private TfIdfVector tfidf;
 	private HashMap<String, Matrix> tagVectorMap;
 
 	/**
@@ -38,6 +39,10 @@ public class CosineSimilarity {
 		// Connect to DB
 		db = new DBAccess();
 		db.connect("couchdb.properties");
+		
+		// Initialize tfidf vector
+		tfidf = new TfIdfVector(featureList);
+		tfidf.fillIdfValueMap(true);
 		
 		// Get tfidf vector for each tag.
 		this.getAllTagVectors(tagFile);
@@ -69,8 +74,7 @@ public class CosineSimilarity {
 	 * @throws IOException
 	 */
 	public double compute(String document, String tag) throws IOException {
-		// Get document tfidf vector
-		TfIdfVector tfidf = new TfIdfVector(featureList);
+		// compute tfidf vector for give document
 		Matrix vDoc = tfidf.compute(document);
 		// Get the tag's tfidf vector
 		Matrix vTag = tagVectorMap.get(tag);

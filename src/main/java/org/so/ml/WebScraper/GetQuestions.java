@@ -30,7 +30,7 @@ public class GetQuestions {
 	// No of questions to fetch in total for a tag
 	private int totalQsPerTag;
 	// DB properties string
-	private String dbProps = "couchdb.properties";
+	private String dbProps = "couchdb_test.properties";
 	// DB Object
 	private CouchDbClient dbClient;
 
@@ -158,8 +158,7 @@ public class GetQuestions {
 					// Get the question block
 					Element question = questionsIterator.next();
 					// question linkS
-					String link = question.findFirst("<a>").getAt("href")
-							.toString();
+					String link = question.findFirst("<a>").getAt("href").toString();
 					// visit the link
 					agent.visit(link);
 
@@ -172,8 +171,7 @@ public class GetQuestions {
 
 					/* Fill the qJson */
 					// Get the unique id for the link
-					// qJson.addProperty("_id", link.replaceAll(uidPattern,
-					// "$2"));
+					// qJson.addProperty("_id", link.replaceAll(uidPattern, "$2"));
 					qJson.addProperty("type", "question"); // Fill the type
 
 					// Add Question Tags

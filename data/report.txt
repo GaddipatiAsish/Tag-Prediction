@@ -1,0 +1,3 @@
+Feature Selection:
+1. Few feature words like "234", "sq" etc (look into feature list once) are not useful.
+2. 
