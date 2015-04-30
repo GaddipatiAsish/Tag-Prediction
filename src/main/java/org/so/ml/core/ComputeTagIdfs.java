@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import com.google.gson.JsonObject;
@@ -24,7 +23,7 @@ public class ComputeTagIdfs {
 	// Get lists - aggregate tag list and feature words
 	private static List<String> tagList;
 	private static List<String> featureWordList;
-	// Map tag vs TotalQ's
+	// Hashmap tag vs TotalQ's Words
 	private static HashMap<String, HashMap<String, Integer>> tagQWordsMap;
 	
 	/**
