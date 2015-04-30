@@ -137,7 +137,7 @@ public class GetQuestions {
 			System.out.println("For Tag URL: " + url);
 			
 			// Get Questions
-			for (int page = 1; page <= getQs.totalQsPerTag / 15; ++page) {
+			for (int page = 1; page <= getQs.totalQsPerTag/15; ++page) {
 				
 				// URL
 				String urlMain = url.toString();
@@ -151,8 +151,7 @@ public class GetQuestions {
 				// Create Web scrapper
 				WebsiteScraper webScraper;
 				// Find question summary
-				Elements questions = webDoc
-						.findEvery("<div class=question-summary>");
+				Elements questions = webDoc.findEvery("<div class=question-summary>");
 				Iterator<Element> questionsIterator = questions.iterator();
 				while (questionsIterator.hasNext()) {
 					// Sleep for some time so that website wont block the program
@@ -168,8 +167,7 @@ public class GetQuestions {
 
 					// Send document to web scrapper to get question, question
 					// description tags & code parts
-					webScraper = new WebsiteScraper(agent.doc,
-							getQs.getStopWords());
+					webScraper = new WebsiteScraper(agent.doc, getQs.getStopWords());
 
 					// Generate a Json object to put into database
 					JsonObject qJson = new JsonObject();

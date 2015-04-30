@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.JsonObject;
-
 import weka.core.matrix.Matrix;
+
+import com.google.gson.JsonObject;
 
 public class TagVectorGenerator {
 
@@ -101,7 +101,6 @@ public class TagVectorGenerator {
 			for(int t=0, max=tagList.size(); t<max; t++) {
 				String tag = tagList.get(t);
 				String questions = getTagQuestions(tag);
-				// TODO: Code part of feature words is yet to be added
 				Matrix featureVector = tfIdf.compute(questions);
 				writeToDB(featureVector, tag);
 			}

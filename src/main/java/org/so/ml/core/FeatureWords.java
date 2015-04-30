@@ -23,7 +23,7 @@ public class FeatureWords {
 	private static HashMap<String, Integer> wordHashMap = new HashMap<String, Integer>(
 			3000);
 	// threshold value for words to be written in output file
-	private static int wordThreshold = 3;
+	private static int wordThreshold = 6;
 
 	/**
 	 * Get Feature Words
@@ -83,10 +83,8 @@ public class FeatureWords {
 	 */
 	private static void writeToFile() throws IOException {
 		// write hashmap to file but with those at-least having threshold value
-		BufferedWriter bw = new BufferedWriter(new FileWriter(
-				"./data/FeatureWords.result"));
-		Iterator<Map.Entry<String, Integer>> iter = wordHashMap.entrySet()
-				.iterator();
+		BufferedWriter bw = new BufferedWriter(new FileWriter("./data/FeatureWords.result"));
+		Iterator<Map.Entry<String, Integer>> iter = wordHashMap.entrySet().iterator();
 		while (iter.hasNext()) {
 			Map.Entry<String, Integer> entry = iter.next();
 			if (entry.getValue() >= wordThreshold) {
