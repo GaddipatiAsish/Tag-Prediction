@@ -28,6 +28,8 @@ public class UnsupervisedTagPrediction {
 	private static List<String> tags;
 	// DB
 	private static DBAccess db;
+	// Cosine Similarity
+	private static CosineSimilarity cs;
 
 	public static void main(String[] args) {
 		try {
@@ -37,8 +39,10 @@ public class UnsupervisedTagPrediction {
 			db = new DBAccess();
 			db.connect("couchdb_test.properties");
 			// run db view and get all the question
-			// TODO: view name needed & .prop file as well
-			db.runView("some_view_name", 0);
+			db.runView("test_time/all_questions", 0);
+			// Initiate Cosine similarity
+			cs = new CosineSimilarity("./data/FeatureWords.result");
+			
 			// for each question calculate the top 5 tags and write to DB
 			for(int q=0, max=(int)db.noOfRowsInView; q<max; q++) {
 				String[] predTags = findTop5Tags((String) db.viewResultGetKey(q, 2));
@@ -93,7 +97,7 @@ public class UnsupervisedTagPrediction {
 		
 		for(int t=0, max=tags.size(); t<max; t++){
 			String currentTag = tags.get(t);
-			Double cosineValue = CosineSimilarity.compute(document, currentTag);
+			Double cosineValue = cs.compute(document, currentTag);
 			// Add them
 			tagList.add(currentTag);
 			cosineValueList.add(cosineValue);

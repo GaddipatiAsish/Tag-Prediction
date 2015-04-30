@@ -21,7 +21,22 @@ public class CosineSimilarity {
 	// DB
 	private static DBAccess db;
 	private static int noOfFeatures;
-	
+	private static List<String> featureList;
+
+	/**
+	 * Constructor - takes feature list file
+	 * @param featureFile
+	 * @throws IOException
+	 */
+	public CosineSimilarity(String featureFile) throws IOException {
+		// Get the feature List
+		featureList = makeFileToList(featureFile);
+		noOfFeatures = featureList.size();
+		// Connect to DB
+		db = new DBAccess();
+		db.connect("couchdb.properties");
+	}
+
 	/**
 	 * Compute CosingSimilarity between given Document and TAG
 	 * @param document
@@ -29,33 +44,26 @@ public class CosineSimilarity {
 	 * @return
 	 * @throws IOException
 	 */
-	public static double compute(String document, String tag) throws IOException {
+	public double compute(String document, String tag) throws IOException {
 		// Get document tfidf vector
-		// TODO: Move this feature list generation independent of compute. so that 
-		// it makes faster computation in we give a sequence of docs.
-		List<String> featureList = makeFileToList("./data/FeatureWords.result");
-		noOfFeatures = featureList.size();
 		TfIdfVector tfidf = new TfIdfVector(featureList);
 		Matrix vDoc = tfidf.compute(document);
-		
 		// Get the tag's tfidf vector
-		db = new DBAccess();
-		db.connect("couchdb.properties");
 		Matrix vTag = getTagVector(tag);
-		
+
 		// compute cosine similarity between two vectors
 		Matrix xTy = vDoc.transpose().times(vTag);
 		double value = 1 - (xTy.get(0, 0)/(vDoc.normF()*vTag.normF()));
 		return value;
 	}
-	
+
 	/**
 	 * Get TagVector for the given tag.
 	 * (gets tag vector string from DB. Then parse into Matrix)
 	 * @param tag
 	 * @return tag vector matrix
 	 */
-	private static Matrix getTagVector(String tag) {
+	private Matrix getTagVector(String tag) {
 		// Run view to get tag vector
 		db.runView("feature_vector/tag_vectors", 0, tag);
 		String v = (String) db.viewResultGetValue(0, 0);
@@ -74,14 +82,14 @@ public class CosineSimilarity {
 		// return Matrix
 		return vTag;
 	}
-	
+
 	/**
 	 * Make file [which has single entries in each row] to a list and return 
 	 * @param fileName
 	 * @return
 	 * @throws IOException
 	 */
-	private static List<String> makeFileToList(String fileName) throws IOException {
+	private List<String> makeFileToList(String fileName) throws IOException {
 		// Open file and populate a list of words
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
 		List<String> wordList = new ArrayList<String>();
