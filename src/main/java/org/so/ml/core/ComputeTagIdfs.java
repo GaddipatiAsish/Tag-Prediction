@@ -25,7 +25,6 @@ public class ComputeTagIdfs {
 	private static List<String> tagList;
 	private static List<String> featureWordList;
 	// Map tag vs TotalQ's
-	private static Map<String, String> tagAndAllQs;
 	private static HashMap<String, HashMap<String, Integer>> tagQWordsMap;
 	
 	/**
@@ -49,9 +48,6 @@ public class ComputeTagIdfs {
 		for(int q=0; q<totalQs; ++q) {
 			allQuestions += (String) db.viewResultGetValue(q, 0) + " ";
 		}
-		
-		// Map the tag & Q's
-		tagAndAllQs.put(tag, allQuestions);
 		
 		// return all questions
 		return allQuestions;
@@ -111,6 +107,7 @@ public class ComputeTagIdfs {
 		// Get Aggregate tag list
 		tagList = makeFileToList("./data/AggregateTags.result");
 		featureWordList  = makeFileToList("./data/FeatureWords.result");
+		tagQWordsMap = new HashMap<String, HashMap<String, Integer>>();
 
 		// Get aggregate question word map for each tag
 		Iterator<String> tagIter = tagList.iterator();
