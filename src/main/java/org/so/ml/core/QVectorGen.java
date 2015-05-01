@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +34,7 @@ public class QVectorGen {
 		breader.close();
 		return featureWords;
 	}
+	
 	/**
 	 * writeToDb method writes the generated tf-idf vector of a question to
 	 * database. It writes the tf-Idf vector in in sparse form as well as full
@@ -44,13 +44,12 @@ public class QVectorGen {
 	 * @param qTags
 	 * @return
 	 */
-	static boolean writeToDb(Matrix tfIdfVector, String[] qTags) {
+	boolean writeToDb(Matrix tfIdfVector, String[] qTags) {
 
 		/* Create a Json Document for Full Feature Vector */
 		JsonObject jsonO = new JsonObject();
 		jsonO.addProperty("type", "feature_vector");
 
-		String featureVectorFull = new String();
 		String featureVectorSparse = new String();
 
 		/* Generate the spare and full feature strings */
@@ -59,16 +58,13 @@ public class QVectorGen {
 				featureVectorSparse += (row + 1) + ":"
 						+ tfIdfVector.get(row, 0) + " ";
 			}
-			featureVectorFull += (row + 1) + ":" + tfIdfVector.get(row, 0)
-					+ " ";
 		}
 
 		/* compose the Json Documents */
 		for (int i = 1; i <= qTags.length; i++) {
 			jsonO.addProperty("tag" + i, qTags[i - 1]);
 		}
-
-		jsonO.addProperty("full", featureVectorFull);
+		/* fill sparse vector */
 		jsonO.addProperty("sparse", featureVectorSparse);
 
 		/* save the Json Doc's to Database */
@@ -122,10 +118,8 @@ public class QVectorGen {
 //			qMapMatrix.put(questionNo, tfidf.compute(question));
 			
 			/* Get the tf-Idf feature vector of given question */
-			writeToDb(tfidf.compute(question), qTagsMap.get(questionNo));
-		
+			qVectorInstance.writeToDb(tfidf.compute(question), qTagsMap.get(questionNo));
 		}
 		//System.out.println("No of Questions Matrix"+ qMapMatrix.size());
-		
 	}
 }

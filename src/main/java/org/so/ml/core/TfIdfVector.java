@@ -75,7 +75,7 @@ public class TfIdfVector {
 	 * @return tf-idf vector
 	 */
 	Matrix compute(String question) {
-
+		// Feature Vector
 		Matrix tfIdfVector = new Matrix(featureWords.size(), 1, 0);
 
 		/* Break the String into Tokens */

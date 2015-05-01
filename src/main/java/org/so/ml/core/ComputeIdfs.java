@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 import org.lightcouch.CouchDbException;
 
 import com.google.gson.JsonObject;
+
 /**
  * ComputeIdfs gets the feature words having threshold > 3 (FeatureWords.result) and
  * puts them into db.
@@ -113,7 +114,7 @@ public class ComputeIdfs {
 			System.out.println("Exception: " + excep.toString());
 		}
 		catch(CouchDbException excep) {
-			System.out.println("Couch Db Exception: "+excep.toString());
+			System.out.println("Couch Db Exception: " + excep.toString());
 		}
 	}
 }
