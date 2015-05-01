@@ -4,23 +4,17 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonObject;
 
 import weka.core.matrix.Matrix;
 
-/**
- * QuestionVectorGenerator generates the feature vectors(Tf-Idf Style) of all
- * questions(Text Style) that present in database and push them back to database
- * from which the SVM Files are generated.
- * 
- * @author AsishKumar
- *
- */
-public class QuestionVectorGenerator {
-
-	// DB Access
+public class QVectorGen {
+	/* DB Access */
 	static DBAccess dbAccess;
 
 	/**
@@ -30,7 +24,7 @@ public class QuestionVectorGenerator {
 	 * @return
 	 * @throws IOException
 	 */
-	static List<String> readFeatureWords() throws IOException {
+	List<String> readFeatureWords() throws IOException {
 		List<String> featureWords = new ArrayList<String>();
 		String file = "./data/FeatureWords.result";
 		String line;
@@ -41,7 +35,6 @@ public class QuestionVectorGenerator {
 		breader.close();
 		return featureWords;
 	}
-
 	/**
 	 * writeToDb method writes the generated tf-idf vector of a question to
 	 * database. It writes the tf-Idf vector in in sparse form as well as full
@@ -85,11 +78,6 @@ public class QuestionVectorGenerator {
 			return false;
 	}
 
-	/**
-	 * 
-	 * @param args
-	 * @throws IOException
-	 */
 	public static void main(String args[]) throws IOException {
 		/* Connect to Database */
 		dbAccess = new DBAccess();
@@ -99,19 +87,45 @@ public class QuestionVectorGenerator {
 		dbAccess.runView("all_docs/all_questions", 2);
 
 		/* read the feature words considered for feature vector from the file */
-		List<String> featureWords = readFeatureWords();
+		QVectorGen qVectorInstance = new QVectorGen();
+		List<String> featureWords = qVectorInstance.readFeatureWords();
 
-		/* loop through the results */
+		/*Instantiate TfIdfVector*/
 		TfIdfVector tfidf = new TfIdfVector(featureWords);
-		tfidf.fillIdfValueMap(false); /* load idf values into map */
-		for (int doc = 0; doc < dbAccess.noOfRowsInView; doc++) {
-			/* Get the Question and the Corresponding Tags */
-			String question = (String) dbAccess.viewResultGetKey(doc, 2);
-			String[] qTags = (String[]) dbAccess.viewResultGetValue(doc, 2);
-
-			/* Get the tf-Idf feature vector of given question */
-			Matrix tfidfVector = tfidf.compute(question);
-			writeToDb(tfidfVector, qTags);
+		/* load idf values into map */
+		tfidf.fillIdfValueMap(false); 
+		System.out.println("Map filled with IDF's\n");
+		
+		/* load all the Questions into a qMap and Respective tags in qTagsMap */
+		Map<Integer, String[]> qTagsMap = new HashMap<Integer, String[]>(40000);
+		Map<Integer, String> qMap = new HashMap<Integer, String>(40000);
+		for (int questionNo = 0; questionNo < dbAccess.noOfRowsInView; questionNo++) {
+			/* Add the question to the Map */
+			qMap.put(questionNo,
+					(String) dbAccess.viewResultGetKey(questionNo, 2));
+			/* Add the tags to the Map */
+			//List<String> qtags = new ArrayList<String>();
+//			Arrays.asList((String[]) dbAccess.viewResultGetValue(questionNo, 2));
+			qTagsMap.put(questionNo, (String[]) dbAccess.viewResultGetValue(questionNo, 2));
 		}
+		System.out.println("No of Questions Tags"+ qTagsMap.size());
+		System.out.println("No of Questions "+ qMap.size());
+		
+		/*Processing each Question from Q-MAP*/
+//		Map<Integer,Matrix> qMapMatrix = new HashMap<Integer, Matrix>(40000);
+		for (int questionNo = 0; questionNo < dbAccess.noOfRowsInView; questionNo++) {
+			/* Get the Question and the Corresponding Tags */
+			String question = qMap.get(questionNo);
+			System.out.println("Processing Q# "+ questionNo);
+			
+			/* Get the tf-Idf feature vector of given question */
+//			qMapMatrix.put(questionNo, tfidf.compute(question));
+			
+			/* Get the tf-Idf feature vector of given question */
+			writeToDb(tfidf.compute(question), qTagsMap.get(questionNo));
+		
+		}
+		//System.out.println("No of Questions Matrix"+ qMapMatrix.size());
+		
 	}
 }

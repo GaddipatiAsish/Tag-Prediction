@@ -56,7 +56,7 @@ public class TfIdfVector {
 		else {
 			while(featureIter.hasNext()) {
 				String word = featureIter.next();
-				dbAccess.runView("idfs/get_idfs", 0, word);
+				dbAccess.runView("idfs/get_idf", 0, word);
 				Double idfValue = Double.parseDouble(((String) dbAccess.viewResultGetValue(0, 0)));
 				idfValueMap.put(word, idfValue);
 			}
