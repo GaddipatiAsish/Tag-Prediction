@@ -100,26 +100,19 @@ public class QVectorGen {
 			qMap.put(questionNo,
 					(String) dbAccess.viewResultGetKey(questionNo, 2));
 			/* Add the tags to the Map */
-			//List<String> qtags = new ArrayList<String>();
-//			Arrays.asList((String[]) dbAccess.viewResultGetValue(questionNo, 2));
 			qTagsMap.put(questionNo, (String[]) dbAccess.viewResultGetValue(questionNo, 2));
 		}
 		System.out.println("No of Questions Tags"+ qTagsMap.size());
 		System.out.println("No of Questions "+ qMap.size());
 		
 		/*Processing each Question from Q-MAP*/
-//		Map<Integer,Matrix> qMapMatrix = new HashMap<Integer, Matrix>(40000);
 		for (int questionNo = 0; questionNo < dbAccess.noOfRowsInView; questionNo++) {
 			/* Get the Question and the Corresponding Tags */
 			String question = qMap.get(questionNo);
 			System.out.println("Processing Q# "+ questionNo);
 			
 			/* Get the tf-Idf feature vector of given question */
-//			qMapMatrix.put(questionNo, tfidf.compute(question));
-			
-			/* Get the tf-Idf feature vector of given question */
 			qVectorInstance.writeToDb(tfidf.compute(question), qTagsMap.get(questionNo));
 		}
-		//System.out.println("No of Questions Matrix"+ qMapMatrix.size());
 	}
 }
