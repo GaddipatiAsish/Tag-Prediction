@@ -67,7 +67,7 @@ public class AggregateTagsList {
 		BufferedWriter bw = new BufferedWriter(new FileWriter("./data/AggregateTags.result"));
 		while(iter.hasNext()) {
 			Map.Entry<String, Integer> entry = iter.next();
-			if(entry.getValue() > 300) {
+			if(entry.getValue() > 20) { /* Tags having atleast 20 Questions are considered for analysis*/
 				bw.write(entry.getKey() + "\n");		// change file to AggregateTags.result
 //				bw.write(entry.toString() + "\n");	// change file to AggregateTagsWithValues.result
 			}
