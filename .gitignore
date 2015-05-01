@@ -8,7 +8,12 @@
 .bin/*
 .metadata/*
 .metadata
-./data/svm/*
+./data/svm/
+./data/svm/*.train
+*.train
+*.test
+*.model
+*.output
 
 # Compiled source #
 *.class
