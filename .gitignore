@@ -14,6 +14,7 @@
 *.test
 *.model
 *.output
+~*
 
 # Compiled source #
 *.class

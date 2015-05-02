@@ -1,0 +1,5 @@
+Java Web Scraping & Automation - http://jaunt-api.com/
+http://stackoverflow.com/
+http://couchdb.apache.org/
+http://www.lightcouch.org/ - CouchDB Java API
+tfidf wiki: http://en.wikipedia.org/wiki/Tf%E2%80%93idf
