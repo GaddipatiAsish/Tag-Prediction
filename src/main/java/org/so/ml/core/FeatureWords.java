@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 /**
  * FeatureWords class iterate through all the questions in the database to
  * compute the count of the words (question & code ) of all the questions. so
- * that the words below threshold value are neglected.
+ * that the words below a threshold value are neglected.
  *
  */
 
@@ -20,10 +20,11 @@ public class FeatureWords {
 	// DB client properties file
 	private static String dbPropFile = "couchdb.properties";
 	// Map for word - count from all of the questions
-	private static HashMap<String, Integer> wordHashMap = new HashMap<String, Integer>(
-			3000);
+	private static HashMap<String, Integer> wordHashMap = new HashMap<String, Integer>(3000);
 	// threshold value for words to be written in output file
 	private static int wordThreshold = 6;
+	// Features List file
+	private static String featuresFile = "./data/FeatureWords_g15.result";
 
 	/**
 	 * Get Feature Words
@@ -83,7 +84,7 @@ public class FeatureWords {
 	 */
 	private static void writeToFile() throws IOException {
 		// write hashmap to file but with those at-least having threshold value
-		BufferedWriter bw = new BufferedWriter(new FileWriter("./data/FeatureWords.result"));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(featuresFile));
 		Iterator<Map.Entry<String, Integer>> iter = wordHashMap.entrySet().iterator();
 		while (iter.hasNext()) {
 			Map.Entry<String, Integer> entry = iter.next();

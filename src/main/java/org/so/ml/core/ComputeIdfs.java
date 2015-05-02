@@ -78,7 +78,12 @@ public class ComputeIdfs {
 				n++;
 		}
 		// return IDF: log(totalDocs/docs having that word)
-		return Math.log(totalDocs/n);
+		double return_val;
+		if(n!=0)
+			return_val = Math.log(totalDocs/n);
+		else
+			return_val = 0;
+		return return_val>0 ? return_val : 0;
 	}
 
 	/**
@@ -91,7 +96,7 @@ public class ComputeIdfs {
 			List<String> wordList = getFeatureWords(args[0]);
 			// Get to DB
 			db = new DBAccess();
-			db.connect("couchdb.properties");
+			db.connect("couchdb_test.properties");	// couchdb.properties
 			db.runView("all_docs/all_questions", 2);
 
 			// Iterate over all the feature word list and generate

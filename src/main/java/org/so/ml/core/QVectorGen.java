@@ -77,7 +77,7 @@ public class QVectorGen {
 	public static void main(String args[]) throws IOException {
 		/* Connect to Database */
 		dbAccess = new DBAccess();
-		dbAccess.connect("couchdb.properties");
+		dbAccess.connect("couchdb_test.properties");
 
 		/* Run the View */
 		dbAccess.runView("all_docs/all_questions", 2);

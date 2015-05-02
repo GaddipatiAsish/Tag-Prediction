@@ -27,6 +27,8 @@ public class AggregateTagsList {
 	private static DBAccess db;
 	// HashMap to store the tags
 	private static HashMap<String, Integer> hashMap;
+	// Question Threshold
+	private static int qThreshold = 20;
 
 	/**
 	 * @param args
@@ -67,7 +69,7 @@ public class AggregateTagsList {
 		BufferedWriter bw = new BufferedWriter(new FileWriter("./data/AggregateTags.result"));
 		while(iter.hasNext()) {
 			Map.Entry<String, Integer> entry = iter.next();
-			if(entry.getValue() > 20) { /* Tags having atleast 20 Questions are considered for analysis*/
+			if(entry.getValue() > qThreshold) { /* Tags having atleast qThreshold Questions are considered for analysis*/
 				bw.write(entry.getKey() + "\n");		// change file to AggregateTags.result
 //				bw.write(entry.toString() + "\n");	// change file to AggregateTagsWithValues.result
 			}
