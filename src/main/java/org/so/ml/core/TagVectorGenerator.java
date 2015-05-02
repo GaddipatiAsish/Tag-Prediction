@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import weka.core.matrix.Matrix;
@@ -14,6 +16,11 @@ public class TagVectorGenerator {
 
 	// DB Access
 	private static DBAccess db;
+	// Lists
+	private static List<String> tagList;
+	private static List<String> featureWords;
+	// Map tag vs no of Questions count
+	private static HashMap<String, Integer> tagQsMap;
 	
 	/**
 	 * Get Feature Words list from the given file
@@ -37,6 +44,23 @@ public class TagVectorGenerator {
 	}
 	
 	/**
+	 * Fill the map with name of tag & no. of Q's for that tag
+	 */
+	private static void fillTagQsMap() {
+		// Get No of questions for each Tag
+		DBAccess tempDB = new DBAccess();
+		tempDB.connect("couchdb.properties");
+		
+		// Run for all tag's 
+		Iterator<String> tagIter = tagList.iterator();
+		while(tagIter.hasNext()) {
+			String tag = tagIter.next();
+			tempDB.runViewAndReduce("all_docs/t_and_q_count", 0, tag);
+			tagQsMap.put(tag, Integer.parseInt((String) tempDB.viewResultGetValue(0, 0)));
+		}
+	}
+	
+	/**
 	 * Get all the questions of a particular tag in a single String
 	 * @param tag
 	 * @return string which is all questions
@@ -46,10 +70,7 @@ public class TagVectorGenerator {
 		db.runView("all_docs/tag_and_question", 0, tag);
 		
 		// Get No of questions for each Tag
-		DBAccess tempDB = new DBAccess();
-		tempDB.connect("couchdb.properties");
-		tempDB.runViewAndReduce("all_docs/t_and_q_count", 0, tag);
-		int totalQs = Integer.parseInt((String) tempDB.viewResultGetValue(0, 0));
+		int totalQs = tagQsMap.get(tag);
 		
 		String allQuestions = "";
 		// Concatenate all the Questions
@@ -87,8 +108,12 @@ public class TagVectorGenerator {
 	public static void main(String[] args) {
 		try {
 			// Get all the tags and feature words
-			List<String> tagList = getWords("./data/AggregateTags.result");
-			List<String> featureWords = getWords("./data/FeatureWords.result");
+			tagList = getWords("./data/AggregateTags.result");
+			featureWords = getWords("./data/FeatureWords.result");
+			
+			// fill the map for easy calculation in getTagQuestions();
+			tagQsMap = new HashMap<String, Integer>();
+			fillTagQsMap();
 			
 			// Instantiate DB
 			db = new DBAccess();

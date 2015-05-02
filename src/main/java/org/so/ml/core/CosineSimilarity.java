@@ -26,7 +26,7 @@ public class CosineSimilarity {
 	private List<String> featureList;
 	private TfIdfVector tfidf;
 	private HashMap<String, Matrix> tagVectorMap;
-
+	
 	/**
 	 * Constructor - takes feature list file
 	 * @param featureFile

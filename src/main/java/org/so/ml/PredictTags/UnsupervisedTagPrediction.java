@@ -64,7 +64,7 @@ public class UnsupervisedTagPrediction {
 	 */
 	private static void writeTagsToDB(String[] predTags, String[] idAndTrueTags) {
 		JsonObject jsonO = new JsonObject();
-		jsonO.addProperty("type", "true_vs_pred_tags");
+		jsonO.addProperty("type", "cluster_pred_tags");
 		jsonO.addProperty("qid", idAndTrueTags[0]);
 		
 		// Add Tags

@@ -22,9 +22,9 @@ public class FeatureWords {
 	// Map for word - count from all of the questions
 	private static HashMap<String, Integer> wordHashMap = new HashMap<String, Integer>(3000);
 	// threshold value for words to be written in output file
-	private static int wordThreshold = 6;
+	private static int wordThreshold = 30;
 	// Features List file
-	private static String featuresFile = "./data/FeatureWords_g15.result";
+	private static String featuresFile = "./data/FeatureWords_g30.result";
 
 	/**
 	 * Get Feature Words
