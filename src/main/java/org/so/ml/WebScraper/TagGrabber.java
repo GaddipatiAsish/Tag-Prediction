@@ -16,10 +16,7 @@ import com.jaunt.UserAgent;
  * used for training, validation and testing. This is the start point of the
  * Project.
  *
-
  * Gets tags from the webpage and saves to a file
-
-
  */
 public class TagGrabber {
 
