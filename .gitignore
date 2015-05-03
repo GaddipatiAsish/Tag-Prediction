@@ -15,6 +15,9 @@
 *.model
 *.output
 ~*
+./data/svm.rar
+./data/svm_light_windows64/
+./data/*.rar
 
 # Compiled source #
 *.class
