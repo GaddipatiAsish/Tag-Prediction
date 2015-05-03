@@ -31,10 +31,19 @@ public class TagAccuracies {
 			List<String> predTags = Arrays.asList((String[]) db.viewResultGetValue(q, 3));
 			// Calculate the no of correct predicted tags
 			int noOfTagsCorrect = 0;
-			for(int t=0, max1=trueTags.size(); t<max1; t++) {
-				String tag = trueTags.get(t);
+//			for(int t=0, max1=trueTags.size(); t<max1; t++) {
+//				String tag = trueTags.get(t);
+//				if(tag != "" && tag != null) {
+//					if(predTags.contains(tag))
+//						noOfTagsCorrect++;
+//				}
+//				else
+//					break;	// No more true tags available. i.e ture tags < 5
+//			}
+			for(int t=0, max1=predTags.size(); t<max1; t++) {
+				String tag = predTags.get(t);
 				if(tag != "" && tag != null) {
-					if(predTags.contains(tag))
+					if(trueTags.contains(tag))
 						noOfTagsCorrect++;
 				}
 				else
