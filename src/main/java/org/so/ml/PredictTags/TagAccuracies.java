@@ -4,7 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.so.ml.core.DBAccess;
-
+/**
+ * TagAccuracies class measures the accuracies of test data set.
+ *
+ */
 public class TagAccuracies {
 	
 	// DB Access

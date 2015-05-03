@@ -12,10 +12,8 @@ import org.lightcouch.CouchDbException;
 import com.google.gson.JsonObject;
 
 /**
- * ComputeIdfs gets the feature words having threshold > some Value
- * (FeatureWords_MinX.result) and puts them into db.
- * 
- * @author AsishKumar
+ * ComputeIdfs class gets the feature words having threshold > some Value
+ * (FeatureWords_MinX.result) and computes the Idf values of the featureWords and inserts them into the database
  *
  */
 public class ComputeIdfs {
@@ -94,6 +92,7 @@ public class ComputeIdfs {
 	}
 
 	/**
+	 * Computes the Idf value and Inserts into the database as a json object
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -105,9 +104,7 @@ public class ComputeIdfs {
 			db = new DBAccess();
 
 			db.connect("couchdb.properties");
-
-			db.connect("couchdb_test.properties"); // couchdb.properties
-
+//			db.connect("couchdb_test.properties"); /*Use this properties file for testing*/
 			db.runView("all_docs/all_questions", 2);
 
 			// Iterate over all the feature word list and generate

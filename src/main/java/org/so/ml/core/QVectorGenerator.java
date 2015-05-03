@@ -11,8 +11,11 @@ import java.util.Map;
 import com.google.gson.JsonObject;
 
 import weka.core.matrix.Matrix;
-
-public class QVectorGen {
+/**
+ * QVectorGenerator class generates the Question Vector in Tf-Idf sparse vector form and writes them into the database
+ *
+ */
+public class QVectorGenerator {
 	/* DB Access */
 	static DBAccess dbAccess;
 
@@ -25,6 +28,7 @@ public class QVectorGen {
 	 */
 	List<String> readFeatureWords() throws IOException {
 		List<String> featureWords = new ArrayList<String>();
+		/* Choose the respective file */
 //		String file = "./data/FeatureWords_Min6.result";
 		String file = "./data/FeatureWords_Min30.result";
 //		String file = "./data/FeatureWords_Min100.result";
@@ -40,7 +44,7 @@ public class QVectorGen {
 	
 	/**
 	 * writeToDb method writes the generated tf-idf vector of a question to
-	 * database. It writes the tf-Idf vector in in sparse form
+	 * database. It writes the tf-Idf vector in in sparse form to the database
 	 * 
 	 * @param tfIdfVector
 	 * @param qTags
@@ -87,7 +91,7 @@ public class QVectorGen {
 		dbAccess.runView("all_docs/all_questions", 2);
 
 		/* read the feature words considered for feature vector from the file */
-		QVectorGen qVectorInstance = new QVectorGen();
+		QVectorGenerator qVectorInstance = new QVectorGenerator();
 		List<String> featureWords = qVectorInstance.readFeatureWords();
 
 		/*Instantiate TfIdfVector*/

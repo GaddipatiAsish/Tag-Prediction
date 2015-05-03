@@ -11,9 +11,7 @@ import weka.core.matrix.Matrix;
 
 /**
  * TfIdf class computes the Tf-Idf vector given the features(Tokens) of a
- * question(Description and Code)
- * 
- * @author AsishKumar
+ * question(Description and Code) and return its
  *
  */
 public class TfIdfVector {

@@ -12,8 +12,6 @@ import java.util.List;
 /**
  * SVMFileGenerator class churns the data from the data base and write them into
  * files compatible for SVM for each tag.
- * 
- * @author AsishKumar
  *
  */
 public class SVMFilesGenerator {
@@ -25,6 +23,7 @@ public class SVMFilesGenerator {
 	 */
 	static List<String> getAllTags() throws Exception {
 		List<String> allTags = new ArrayList<String>();
+		/* Choose the respective file */
 //		String file = "./data/AggregateTags_Min20q.result";
 //		String file = "./data/AggregateTags_Min100q.result";
 		String file = "./data/AggregateTags_Min200q.result";
@@ -40,8 +39,8 @@ public class SVMFilesGenerator {
 	public static void main(String args[]) throws Exception {
 		/* run view in DB */
 		DBAccess dbAccess = new DBAccess();
-//		dbAccess.connect("couchdb_test.properties");
-		dbAccess.connect("couchdb.properties");
+//		dbAccess.connect("couchdb_test.properties"); /*Test data base properties */
+		dbAccess.connect("couchdb.properties"); /*train database properties*/
 		dbAccess.runView("feature_vector/sparse", 2);
 
 		List<String> allTags = getAllTags();

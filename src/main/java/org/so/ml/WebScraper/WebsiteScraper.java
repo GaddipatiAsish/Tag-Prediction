@@ -12,9 +12,7 @@ import com.jaunt.NotFound;
 
 /**
  * WebsiteScraper takes the website url as input and reads the specific elements
- * like question question description and tags
- * 
- * @author AsishKumar
+ * like question, question description and tags.
  *
  */
 public class WebsiteScraper {

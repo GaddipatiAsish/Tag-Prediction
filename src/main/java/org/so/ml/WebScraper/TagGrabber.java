@@ -12,8 +12,8 @@ import com.jaunt.UserAgent;
 
 /**
  * TagGrabber class fetches the tags from the stackOverflow website and writes
- * them to a file. All the questions related to these tags are downloaded and
- * used for training, validation and testing. This is the start point of the
+ * them to a file. All the questions related to these tags will be downloaded and
+ * used for training and testing. This is the start point of the
  * Project.
  *
  * Gets tags from the webpage and saves to a file
@@ -44,7 +44,11 @@ public class TagGrabber {
 		System.out.println("TagList File Generated");
 		writeTagsToFile(tagList);
 	}
-
+	/**
+	 * writeTagsToFile method writes the list of tags into MasterTagFile.result file
+	 * @param tagList
+	 * @throws IOException
+	 */
 	private static void writeTagsToFile(List<String> tagList)
 			throws IOException {
 		// write to file

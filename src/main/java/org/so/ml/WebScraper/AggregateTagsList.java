@@ -18,7 +18,6 @@ import org.so.ml.core.DBAccess;
  * tags. But for each question there could be utmost 5 tags. So, in
  * out DB there could be N*5 tags. This program is to aggregate and 
  * get all the unique tags.
- * @author chinmaya
  *
  */
 public class AggregateTagsList {
@@ -27,9 +26,9 @@ public class AggregateTagsList {
 	private static DBAccess db;
 	// HashMap to store the tags
 	private static HashMap<String, Integer> hashMap;
-	// Question Threshold
+	/*Question Threshold: Adjust this value for No of tags having at least 200 questions*/
 	private static int qThreshold = 200;
-	// Aggregate Tags file name
+	/* Aggregate Tags file name: Give the respective file name to capture the Aggregate Tags*/
 	private static String tagsFile = "./data/AggregateTags_g200.result";
 
 	/**
@@ -62,7 +61,7 @@ public class AggregateTagsList {
 	}
 
 	/**
-	 * Write the hashmap to file or just the tags
+	 * Write the hashmap aggregate tags having at least x questions to file or just the tags
 	 * @throws IOException 
 	 */
 	private static void writeToFile() throws IOException {
@@ -72,8 +71,7 @@ public class AggregateTagsList {
 		while(iter.hasNext()) {
 			Map.Entry<String, Integer> entry = iter.next();
 			if(entry.getValue() > qThreshold) { /* Tags having atleast qThreshold Questions are considered for analysis*/
-				bw.write(entry.getKey() + "\n");		// change file to AggregateTags.result
-//				bw.write(entry.toString() + "\n");	// change file to AggregateTagsWithValues.result
+				bw.write(entry.getKey() + "\n"); /* change file to AggregateTags.result */
 			}
 		}
 		// close buffer

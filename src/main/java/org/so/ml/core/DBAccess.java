@@ -6,7 +6,10 @@ import org.lightcouch.View;
 import org.lightcouch.ViewResult;
 
 import com.google.gson.JsonObject;
-
+/**
+ * DBAccess is the central class for the database related operations like opening and closing of the database and insertion and retrieval of views.
+ *
+ */
 public class DBAccess {
 
 	// Database

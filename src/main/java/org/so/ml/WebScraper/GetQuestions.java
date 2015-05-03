@@ -21,26 +21,28 @@ import com.jaunt.UserAgent;
 
 /**
  * GetQuestions gets the questions that are related to a tag and loads them into
- * database by removing the stop words.
+ * database by removing the stop words that are available in StopWords.txt file.
  * 
- * Second Step of the Project
  */
 public class GetQuestions {
 
-	// No of questions to fetch in total for a tag
+	/* No of questions to fetch in total for a tag */
 	private int totalQsPerTag;
-	// DB properties string
+	/* DB properties string:  use the respective properties file to switch between train and test databases 
+	 * Options are 1. couchdb.properties 2. couchdb_test.properties 
+	 */
 	private String dbProps = "couchdb_test.properties";
-	// DB Object
+	/* Database Object*/
 	private CouchDbClient dbClient;
 
 	/**
-	 * Constructor
+	 * GetQuestions constructor initializes the database connectivity and No of Questions to grab for a
+	 * given tag from StackOverflow.com
 	 */
 	public GetQuestions(int totalQsPerTag) {
-		// Total questions per tag
+		/* Total questions per tag */
 		this.totalQsPerTag = totalQsPerTag;
-		// Connect to the Database
+		/* Connect to the Database */
 		this.dbClient = new CouchDbClient(dbProps);
 	}
 
@@ -65,15 +67,15 @@ public class GetQuestions {
 	}
 
 	/**
-	 * Push given json to DB
+	 * pushToDB method inserts the json object into the database
 	 * 
 	 * @param qJson
-	 * @return
+	 * @return true if inserted to database, false otherwise
 	 */
 	private boolean pushToDB(JsonObject qJson) {
-		// push json object to database
+		/* push json object to database */
 		Response r = this.dbClient.save(qJson);
-		// return
+		/* return */
 		if (r.getError() == null)
 			return true;
 		else {
@@ -84,10 +86,10 @@ public class GetQuestions {
 	}
 
 	/**
-	 * getTags method get the list of tags from the file that are used to get
+	 * getTags method get the list of tags from the file(MasterTagFile.result) that are used to get
 	 * the questions from stackoverflow.com
 	 * 
-	 * @return List of tags to get the question from
+	 * @return List of tags to get the questions from
 	 * @throws IOException
 	 */
 	List<String> getTags() throws IOException {
@@ -112,33 +114,30 @@ public class GetQuestions {
 	public static void main(String[] args) throws ResponseException, NotFound,
 			IOException, InterruptedException {
 
-		// Create GetQuestions Object
-		GetQuestions getQs = new GetQuestions(15);		// Grabbing 210 questions per Tag (tag list in MasterTagFile.result)
+		/* Create GetQuestions Object */
+		/* Grabbing 210 questions per Tag (tag list in MasterTagFile.result) */
+		GetQuestions getQs = new GetQuestions(15/*No of Questions to Grab/Tag*/);
+		/* List of tags to get questions from */
+		List<String> tagList = getQs.getTags();
 
-		// List of tags to get questions from
-//		List<String> tagList = getQs.getTags();
-		List<String> tagList = new ArrayList<String>();
-		tagList.add("c++");
-		tagList.add("java");
-		tagList.add("javascript");
-
-		// create view agent
+		/* create jaunt user agent (similar to : mini browser client) */
 		UserAgent agent = new UserAgent();
 
-		// RegEx pattern for unique identifier of question
-		// String uidPattern =
-		// "(http://stackoverflow.com/questions/)(\\d+)(/.*)";
+		/* RegEx pattern for unique identifier of question
+		 * String uidPattern =
+		 * "(http://stackoverflow.com/questions/)(\\d+)(/.*)"; 
+		 */
 
-		// Iterate over the tags to get the pages
+		/* Iterate over the tags to get the pages */
 		Iterator<String> tagIterator = tagList.iterator();
 		while (tagIterator.hasNext()) {
-			// Construct the URL
+			/* Construct the URL */
 			String url = "http://stackoverflow.com/questions/tagged/";
-			// Append the URL
+			/* Append the URL */
 			url += tagIterator.next();
 			System.out.println("For Tag URL: " + url);
 			
-			// Get Questions
+			/* Get Questions */
 			for (int page = 1; page <= getQs.totalQsPerTag/15; ++page) {
 				// URL
 				String urlMain = url.toString();
@@ -195,7 +194,6 @@ public class GetQuestions {
 					for (int d = 0; d < qCode.size(); ++d) {
 						questionContent += "@" + qCode.get(d) + "@ ";
 					}
-					// TODO: may have to update all_questions view
 					qJson.addProperty("qContent", questionContent);
 					// Add this to DB
 					boolean res = getQs.pushToDB(qJson);

@@ -21,7 +21,9 @@ public class FeatureWords {
 	private static String dbPropFile = "couchdb.properties";
 	// Map for word - count from all of the questions
 	private static HashMap<String, Integer> wordHashMap = new HashMap<String, Integer>(3000);
-	// threshold value for words to be written in output file
+	/* threshold value for words to be written in output file 
+	 * Usage: update this value to select words that occurred at least x times in all the train questions
+	 */
 	private static int wordThreshold = 30;
 	// Features List file
 	private static String featuresFile = "./data/FeatureWords_g30.result";
@@ -51,9 +53,6 @@ public class FeatureWords {
 			String description = (String) db.viewResultGetKey(d, 2);
 			updateHashMap(description);
 		}
-
-		// print the hashmap
-		// System.out.println(wordHashMap);
 		// Write the Hashmap to file with threshold applied
 		writeToFile();
 	}
@@ -79,7 +78,7 @@ public class FeatureWords {
 	}
 
 	/**
-	 * Write Word HashMap to File
+	 * Writes Word HashMap to File
 	 * 
 	 * @throws IOException
 	 */
