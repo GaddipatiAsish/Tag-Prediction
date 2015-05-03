@@ -64,7 +64,7 @@ public class UnsupervisedTagPrediction {
 	 */
 	private static void writeTagsToDB(String[] predTags, String[] idAndTrueTags) {
 		JsonObject jsonO = new JsonObject();
-		jsonO.addProperty("type", "true_vs_pred_tags");
+		jsonO.addProperty("type", "cluster_pred_tags");
 		jsonO.addProperty("qid", idAndTrueTags[0]);
 		
 		// Add Tags
@@ -73,7 +73,7 @@ public class UnsupervisedTagPrediction {
 			if(trueTag != null)
 				jsonO.addProperty("true_tag_"+i, trueTag);
 		}
-		for(int i=1; i<6; i++) {
+		for(int i=1; i<predTags.length+1; i++) {
 			jsonO.addProperty("pred_tag_"+i, predTags[i-1]);
 		}
 		
@@ -102,8 +102,9 @@ public class UnsupervisedTagPrediction {
 		}
 		
 		// Get the top 5 tags
-		String[] predTags = new String[5];
-		for(int i=0; i<5; i++) {
+		int topN = 20;
+		String[] predTags = new String[topN];
+		for(int i=0; i<topN; i++) {
 			int maxValuePosition = cosineValueList.indexOf(Collections.max(cosineValueList));
 			predTags[i] = tagList.get(maxValuePosition);
 			// remote the top valued item, to get next maximum element in the next iteration

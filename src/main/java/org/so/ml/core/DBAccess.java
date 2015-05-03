@@ -144,6 +144,47 @@ public class DBAccess {
 	}
 	
 	/**
+	 *  NOTE: --- This Method is not used. Probably this method is wrong. "Yet to verify"
+	 * Runs the given View & filter with the key provided
+	 * @param viewName
+	 * @return true if run successfully else false
+	 */
+	public boolean runViewAndReduce(String viewName, int stringArrayId) {
+		try {
+			// Run the given view
+			view = dbClient.view(viewName).reduce(true);
+			
+			// Assign to public variables
+			if(stringArrayId == 0) {
+				viewResult = view.queryView(String.class, String.class, JsonObject.class);
+				noOfRowsInView = viewResult.getTotalRows();
+			}
+			else if(stringArrayId == 1) {
+				viewResultKeyArray = view.queryView(String[].class, String.class, JsonObject.class);
+				noOfRowsInView = viewResultKeyArray.getTotalRows();
+			}
+			else if(stringArrayId == 2) {
+				viewResultValueArray = view.queryView(String.class, String[].class, JsonObject.class);
+				noOfRowsInView = viewResultValueArray.getTotalRows();
+			}
+			else if(stringArrayId == 3) {
+				viewResultBothArrays = view.queryView(String[].class, String[].class, JsonObject.class);
+				noOfRowsInView = viewResultBothArrays.getTotalRows();
+			}
+			else {
+				throw new CouchDbException("For runView, stringArrayId can be either 0, 1, 2 or 3 depending if any of key, value are arrays");
+			}
+		}
+		catch(CouchDbException excep) {
+			System.out.println("Exception while running a view & assigning to viewResult:- " + excep);
+			System.out.println(viewName.toString());
+			return false;
+		}
+
+		return true;
+	}
+	
+	/**
 	 * Runs the given View & filter with the key provided
 	 * @param viewName
 	 * @return true if run successfully else false

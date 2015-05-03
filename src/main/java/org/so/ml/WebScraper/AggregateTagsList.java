@@ -27,6 +27,10 @@ public class AggregateTagsList {
 	private static DBAccess db;
 	// HashMap to store the tags
 	private static HashMap<String, Integer> hashMap;
+	// Question Threshold
+	private static int qThreshold = 200;
+	// Aggregate Tags file name
+	private static String tagsFile = "./data/AggregateTags_g200.result";
 
 	/**
 	 * @param args
@@ -64,10 +68,10 @@ public class AggregateTagsList {
 	private static void writeToFile() throws IOException {
 		// Iterate on hashmap and write to file
 		Iterator<Map.Entry<String, Integer>> iter = hashMap.entrySet().iterator();
-		BufferedWriter bw = new BufferedWriter(new FileWriter("./data/AggregateTags.result"));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(tagsFile));
 		while(iter.hasNext()) {
 			Map.Entry<String, Integer> entry = iter.next();
-			if(entry.getValue() > 20) { /* Tags having atleast 20 Questions are considered for analysis*/
+			if(entry.getValue() > qThreshold) { /* Tags having atleast qThreshold Questions are considered for analysis*/
 				bw.write(entry.getKey() + "\n");		// change file to AggregateTags.result
 //				bw.write(entry.toString() + "\n");	// change file to AggregateTagsWithValues.result
 			}

@@ -27,12 +27,17 @@ public class TagAccuracies {
 		// connect to database
 		db = new DBAccess();
 		db.connect(propFile);
-		// Run view to get the predicted and real tags
-		db.runView("test_time/result_tags_match_svm", 3);
+		/* Run view to get the predicted and real tags */
+		
+		/*use this for svm results*/
+//		db.runView("test_time/result_tags_match_svm", 3);
+		
+		/*use this for cosine similarity clustering*/
+		db.runView("test_time/result_tags_match", 3);
+
 		// Iterate on each questions result and calculate accuracies
 		double totalQs = (double) db.noOfRowsInView;
 		for(int q=0, max=(int)totalQs; q<max; ++q) {
-//			System.out.println("For Qn: " + q);
 			List<String> trueTags = Arrays.asList((String[]) db.viewResultGetKey(q, 3));
 			List<String> predTags = Arrays.asList((String[]) db.viewResultGetValue(q, 3));
 			
@@ -78,4 +83,6 @@ public class TagAccuracies {
 		System.out.println("Accuracy for atleast 4 Tag Correct: " + 100*(fourCorrect+fiveCorrect)/(totalQs-qsWith1Tags-qsWith2Tags-qsWith3Tags));
 		System.out.println("Accuracy for atleast 5 Tag Correct: " + 100*(fiveCorrect)/(totalQs-qsWith1Tags-qsWith2Tags-qsWith3Tags-qsWith4Tags));
 	}
+
 }
+

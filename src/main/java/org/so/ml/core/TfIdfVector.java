@@ -62,7 +62,6 @@ public class TfIdfVector {
 				idfValueMap.put(word, idfValue);
 			}
 		}
-		
 	}
 
 	/**

@@ -113,10 +113,14 @@ public class GetQuestions {
 			IOException, InterruptedException {
 
 		// Create GetQuestions Object
-		GetQuestions getQs = new GetQuestions(210);		// Grabbing 210 questions per Tag (tag list in MasterTagFile.result)
+		GetQuestions getQs = new GetQuestions(15);		// Grabbing 210 questions per Tag (tag list in MasterTagFile.result)
 
 		// List of tags to get questions from
-		List<String> tagList = getQs.getTags();
+//		List<String> tagList = getQs.getTags();
+		List<String> tagList = new ArrayList<String>();
+		tagList.add("c++");
+		tagList.add("java");
+		tagList.add("javascript");
 
 		// create view agent
 		UserAgent agent = new UserAgent();
@@ -136,7 +140,6 @@ public class GetQuestions {
 			
 			// Get Questions
 			for (int page = 1; page <= getQs.totalQsPerTag/15; ++page) {
-				
 				// URL
 				String urlMain = url.toString();
 				// Append the URL

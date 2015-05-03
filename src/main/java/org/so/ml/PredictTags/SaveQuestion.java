@@ -39,13 +39,13 @@ public class SaveQuestion {
 //		System.out.println(findObj.get("question"));
 		
 		// --------
-		View v = dbClient.view("delete/true_vs_pred_tags"); // update/python -- delete/empty_qcontent
+		View v = dbClient.view("delete/result_tags_match"); // update/python -- delete/empty_qcontent
 		ViewResult<String, String, JsonObject> vResult = v.queryView(String.class, String.class, JsonObject.class);
 		for(int i=0, max=(int) vResult.getTotalRows(); i<max; i++) {
 			delete(vResult.getRows().get(i).getKey(), vResult.getRows().get(i).getValue());
 		}
 		
-//		// --------
+		// --------
 //		View v = dbClient.view("delete/update_to_cpp"); // update/python -- delete/empty_qcontent
 //		ViewResult<String[], String[], JsonObject> vResult = v.queryView(String[].class, String[].class, JsonObject.class);
 //		for(int i=0, max=(int) vResult.getTotalRows(); i<max; i++) {
