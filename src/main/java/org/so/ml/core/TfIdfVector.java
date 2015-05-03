@@ -34,7 +34,8 @@ public class TfIdfVector {
 		this.featureWords = featureWords;
 		/* For DB connection */
 		dbAccess = new DBAccess();
-		dbAccess.connect("couchdb.properties");
+//		dbAccess.connect("couchdb_test.properties"); /*For Testing*/
+		dbAccess.connect("couchdb.properties"); /*For Training*/
 		// IDF values list
 		idfValueMap = new HashMap<String, Double>();
 	}

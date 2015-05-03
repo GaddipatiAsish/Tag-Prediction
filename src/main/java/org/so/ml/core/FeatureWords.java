@@ -23,7 +23,7 @@ public class FeatureWords {
 	private static HashMap<String, Integer> wordHashMap = new HashMap<String, Integer>(
 			3000);
 	// threshold value for words to be written in output file
-	private static int wordThreshold = 6;
+	private static int wordThreshold = 30;
 
 	/**
 	 * Get Feature Words

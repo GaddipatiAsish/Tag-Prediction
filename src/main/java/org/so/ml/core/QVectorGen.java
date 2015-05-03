@@ -25,7 +25,10 @@ public class QVectorGen {
 	 */
 	List<String> readFeatureWords() throws IOException {
 		List<String> featureWords = new ArrayList<String>();
-		String file = "./data/FeatureWords.result";
+//		String file = "./data/FeatureWords_Min6.result";
+		String file = "./data/FeatureWords_Min30.result";
+//		String file = "./data/FeatureWords_Min100.result";
+	
 		String line;
 		BufferedReader breader = new BufferedReader(new FileReader(file));
 		while ((line = breader.readLine()) != null) {
@@ -37,8 +40,7 @@ public class QVectorGen {
 	
 	/**
 	 * writeToDb method writes the generated tf-idf vector of a question to
-	 * database. It writes the tf-Idf vector in in sparse form as well as full
-	 * vector
+	 * database. It writes the tf-Idf vector in in sparse form
 	 * 
 	 * @param tfIdfVector
 	 * @param qTags
@@ -77,8 +79,8 @@ public class QVectorGen {
 	public static void main(String args[]) throws IOException {
 		/* Connect to Database */
 		dbAccess = new DBAccess();
-		dbAccess.connect("couchdb.properties");
-
+//		dbAccess.connect("couchdb_test.properties"); /*Test Database Properties*/
+		dbAccess.connect("couchdb.properties"); /*Train Database Properties*/
 		/* Run the View */
 		dbAccess.runView("all_docs/all_questions", 2);
 
