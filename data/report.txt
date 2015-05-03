@@ -1,3 +1,16 @@
 Feature Selection:
 1. Few feature words like "234", "sq" etc (look into feature list once) are not useful.
 2. 
+
+Data Chart
+java %ge - C %ge etc. table to show dataset diversity
+
+Future Work:
+1. Dependent Tags - HTML-CSS-PHP ; Java-Swings etc groups
+2. Feature Selection mroe robust
+3. More robust code language prediction
+4. more weight for words in title than description
+5. code words more weightage
+
+=== 
+Stop words used	

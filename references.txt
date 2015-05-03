@@ -3,3 +3,5 @@ http://stackoverflow.com/
 http://couchdb.apache.org/
 http://www.lightcouch.org/ - CouchDB Java API
 tfidf wiki: http://en.wikipedia.org/wiki/Tf%E2%80%93idf
+ECML PKDD Discovery 2009 - http://ceur-ws.org/Vol-497/proceedings.pdf (page 157)
+Stanley & Byrne - http://libflow.com/d/je2sdtys/Predicting_Tags_for_StackOverflow_Posts
