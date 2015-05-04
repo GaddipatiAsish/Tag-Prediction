@@ -1,0 +1,99 @@
+_design/all_docs/_view/all_questions
+--------------------------
+function(doc) {
+  if(doc.type === "question") {
+    emit(doc.qContent, [doc.tag1, doc.tag2, doc.tag3, doc.tag4, doc.tag5]);
+  }
+}
+
+_design/all_docs/_view/t_and_q_count
+---------------------------
+Map:
+function(doc) {
+  if(doc.type === "question") {
+    if(doc.tag1 != null)
+      emit(doc.tag1, doc.qContent);
+    if(doc.tag2 != null)
+      emit(doc.tag2, doc.qContent);
+    if(doc.tag3 != null)
+      emit(doc.tag3, doc.qContent);
+    if(doc.tag4 != null)
+      emit(doc.tag4, doc.qContent);
+    if(doc.tag5 != null)
+      emit(doc.tag5, doc.qContent);
+  }
+}
+Reduce:
+function(keys, values, rereduce) {
+  if (rereduce) {
+    return sum(values);
+  } else {
+    return values.length;
+  }
+}
+
+all_docs/_view/tag_and_question
+----------------------------
+function(doc) {
+  if(doc.type === "question") {
+    if(doc.tag1 != null)
+      emit(doc.tag1, doc.qContent);
+    if(doc.tag2 != null)
+      emit(doc.tag2, doc.qContent);
+    if(doc.tag3 != null)
+      emit(doc.tag3, doc.qContent);
+    if(doc.tag4 != null)
+      emit(doc.tag4, doc.qContent);
+    if(doc.tag5 != null)
+      emit(doc.tag5, doc.qContent);
+  }
+}
+
+_design/feature_vector/_view/sparse
+------------------------------
+function(doc) {
+  if(doc.type === "feature_vector") {
+    emit(doc.sparse, [doc.tag1, doc.tag2, doc.tag3, doc.tag4, doc.tag5]);
+  }
+}
+
+_design/feature_vector/_view/tag_vectors
+--------------------------------
+function(doc) {
+  if(doc.type==="tag_vector") {
+    emit(doc.tag, doc.vector);
+  }
+}
+
+_design/idfs/_view/get_idf
+--------------------------
+function(doc) {
+  if(doc.type == "idf") {
+    emit(doc.word, doc.value);
+  }
+}
+
+_design/idfs/_view/get_tag_idfs
+-------------------------------
+function(doc) {
+  if(doc.type==="tag_idf") {
+    emit(doc.word, doc.value);
+  }
+}
+
+_design/test_time/_view/all_questions
+------------------------------------
+function(doc) {
+  if(doc.type === "question") {
+    emit(doc.qContent, [doc._id, doc.tag1, doc.tag2, doc.tag3, doc.tag4, doc.tag5]);
+  }
+}
+
+_design/test_time/_view/result_tags_match
+------------------------------------
+function(doc) {
+  if(doc.type === "cluster_pred_tags") {
+    emit([doc.true_tag_1, doc.true_tag_2, doc.true_tag_3, doc.true_tag_4, doc.true_tag_5], 
+    [doc.pred_tag_1, doc.pred_tag_2, doc.pred_tag_3, doc.pred_tag_4, doc.pred_tag_5]);
+  }
+}
