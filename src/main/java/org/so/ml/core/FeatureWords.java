@@ -26,6 +26,7 @@ public class FeatureWords {
 	// Features List file
 	private static String featuresFile = "./data/FeatureWords_g30.result";
 
+
 	/**
 	 * Get Feature Words
 	 * 
